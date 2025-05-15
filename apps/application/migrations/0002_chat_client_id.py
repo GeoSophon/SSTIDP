@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0001_initial'),
+        ("application", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='chat',
-            name='client_id',
-            field=models.UUIDField(default=None, null=True, verbose_name='客户端id'),
+            model_name="chat",
+            name="client_id",
+            field=models.UUIDField(default=None, null=True, verbose_name="客户端id"),
         ),
     ]

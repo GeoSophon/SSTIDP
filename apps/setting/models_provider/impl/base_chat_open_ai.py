@@ -5,7 +5,12 @@ from typing import List, Dict, Optional, Any, Iterator, cast, Type, Union
 import openai
 from langchain_core.callbacks import CallbackManagerForLLMRun
 from langchain_core.language_models import LanguageModelInput
-from langchain_core.messages import BaseMessage, get_buffer_string, BaseMessageChunk, AIMessageChunk
+from langchain_core.messages import (
+    BaseMessage,
+    get_buffer_string,
+    BaseMessageChunk,
+    AIMessageChunk,
+)
 from langchain_core.outputs import ChatGenerationChunk, ChatGeneration
 from langchain_core.runnables import RunnableConfig, ensure_config
 from langchain_core.utils.pydantic import is_basemodel_subclass
@@ -30,31 +35,33 @@ class BaseChatOpenAI(ChatOpenAI):
         if self.usage_metadata is None or self.usage_metadata == {}:
             try:
                 return super().get_num_tokens_from_messages(messages)
-            except Exception as e:
+            except Exception:
                 tokenizer = TokenizerManage.get_tokenizer()
-                return sum([len(tokenizer.encode(get_buffer_string([m]))) for m in messages])
-        return self.usage_metadata.get('input_tokens', 0)
+                return sum(
+                    [len(tokenizer.encode(get_buffer_string([m]))) for m in messages]
+                )
+        return self.usage_metadata.get("input_tokens", 0)
 
     def get_num_tokens(self, text: str) -> int:
         if self.usage_metadata is None or self.usage_metadata == {}:
             try:
                 return super().get_num_tokens(text)
-            except Exception as e:
+            except Exception:
                 tokenizer = TokenizerManage.get_tokenizer()
                 return len(tokenizer.encode(text))
-        return self.get_last_generation_info().get('output_tokens', 0)
+        return self.get_last_generation_info().get("output_tokens", 0)
 
     def _stream(
-            self,
-            messages: List[BaseMessage],
-            stop: Optional[List[str]] = None,
-            run_manager: Optional[CallbackManagerForLLMRun] = None,
-            **kwargs: Any,
+        self,
+        messages: List[BaseMessage],
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[CallbackManagerForLLMRun] = None,
+        **kwargs: Any,
     ) -> Iterator[ChatGenerationChunk]:
         kwargs["stream"] = True
         kwargs["stream_options"] = {"include_usage": True}
         """Set default stream_options."""
-        stream_usage = self._should_stream_usage(kwargs.get('stream_usage'), **kwargs)
+        stream_usage = self._should_stream_usage(kwargs.get("stream_usage"), **kwargs)
         # Note: stream_options is not a valid parameter for Azure OpenAI.
         # To support users proxying Azure through ChatOpenAI, here we only specify
         # stream_options if include_usage is set to True.
@@ -68,7 +75,7 @@ class BaseChatOpenAI(ChatOpenAI):
         base_generation_info = {}
 
         if "response_format" in payload and is_basemodel_subclass(
-                payload["response_format"]
+            payload["response_format"]
         ):
             # TODO: Add support for streaming with Pydantic response_format.
             warnings.warn("Streaming with Pydantic response_format not yet supported.")
@@ -106,9 +113,13 @@ class BaseChatOpenAI(ChatOpenAI):
                     continue
 
                 # custom code
-                if len(chunk['choices']) > 0 and 'reasoning_content' in chunk['choices'][0]['delta']:
-                    generation_chunk.message.additional_kwargs["reasoning_content"] = chunk['choices'][0]['delta'][
-                        'reasoning_content']
+                if (
+                    len(chunk["choices"]) > 0
+                    and "reasoning_content" in chunk["choices"][0]["delta"]
+                ):
+                    generation_chunk.message.additional_kwargs["reasoning_content"] = (
+                        chunk["choices"][0]["delta"]["reasoning_content"]
+                    )
 
                 default_chunk_class = generation_chunk.message.__class__
                 logprobs = (generation_chunk.generation_info or {}).get("logprobs")
@@ -122,32 +133,36 @@ class BaseChatOpenAI(ChatOpenAI):
                     self.usage_metadata = generation_chunk.message.usage_metadata
                 yield generation_chunk
 
-    def _create_chat_result(self,
-                            response: Union[dict, openai.BaseModel],
-                            generation_info: Optional[Dict] = None):
+    def _create_chat_result(
+        self,
+        response: Union[dict, openai.BaseModel],
+        generation_info: Optional[Dict] = None,
+    ):
         result = super()._create_chat_result(response, generation_info)
         try:
-            reasoning_content = ''
+            reasoning_content = ""
             reasoning_content_enable = False
             for res in response.choices:
-                if 'reasoning_content' in res.message.model_extra:
+                if "reasoning_content" in res.message.model_extra:
                     reasoning_content_enable = True
-                    _reasoning_content = res.message.model_extra.get('reasoning_content')
+                    _reasoning_content = res.message.model_extra.get(
+                        "reasoning_content"
+                    )
                     if _reasoning_content is not None:
                         reasoning_content += _reasoning_content
             if reasoning_content_enable:
-                result.llm_output['reasoning_content'] = reasoning_content
-        except Exception as e:
+                result.llm_output["reasoning_content"] = reasoning_content
+        except Exception:
             pass
         return result
 
     def invoke(
-            self,
-            input: LanguageModelInput,
-            config: Optional[RunnableConfig] = None,
-            *,
-            stop: Optional[List[str]] = None,
-            **kwargs: Any,
+        self,
+        input: LanguageModelInput,
+        config: Optional[RunnableConfig] = None,
+        *,
+        stop: Optional[List[str]] = None,
+        **kwargs: Any,
     ) -> BaseMessage:
         config = ensure_config(config)
         chat_result = cast(
@@ -163,6 +178,9 @@ class BaseChatOpenAI(ChatOpenAI):
                 **kwargs,
             ).generations[0][0],
         ).message
-        self.usage_metadata = chat_result.response_metadata[
-            'token_usage'] if 'token_usage' in chat_result.response_metadata else chat_result.usage_metadata
+        self.usage_metadata = (
+            chat_result.response_metadata["token_usage"]
+            if "token_usage" in chat_result.response_metadata
+            else chat_result.usage_metadata
+        )
         return chat_result

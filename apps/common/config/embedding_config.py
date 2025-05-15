@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： embedding_config.py
-    @date：2023/10/23 16:03
-    @desc:
+@project: maxkb
+@Author：虎
+@file： embedding_config.py
+@date：2023/10/23 16:03
+@desc:
 """
+
 import threading
 import time
 
@@ -15,7 +16,7 @@ lock = threading.Lock()
 
 
 class ModelManage:
-    cache = MemCache('model', {})
+    cache = MemCache("model", {})
     up_clear_time = time.time()
 
     @staticmethod
@@ -50,17 +51,21 @@ class ModelManage:
 class VectorStore:
     from embedding.vector.pg_vector import PGVector
     from embedding.vector.base_vector import BaseVectorStore
+
     instance_map = {
-        'pg_vector': PGVector,
+        "pg_vector": PGVector,
     }
     instance = None
 
     @staticmethod
     def get_embedding_vector() -> BaseVectorStore:
         from embedding.vector.pg_vector import PGVector
+
         if VectorStore.instance is None:
             from smartdoc.const import CONFIG
-            vector_store_class = VectorStore.instance_map.get(CONFIG.get("VECTOR_STORE_NAME"),
-                                                              PGVector)
+
+            vector_store_class = VectorStore.instance_map.get(
+                CONFIG.get("VECTOR_STORE_NAME"), PGVector
+            )
             VectorStore.instance = vector_store_class()
         return VectorStore.instance

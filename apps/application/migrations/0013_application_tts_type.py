@@ -4,15 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0012_application_stt_model_application_stt_model_enable_and_more'),
+        (
+            "application",
+            "0012_application_stt_model_application_stt_model_enable_and_more",
+        ),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='application',
-            name='tts_type',
-            field=models.CharField(default='BROWSER', max_length=20, verbose_name='语音播放类型'),
+            model_name="application",
+            name="tts_type",
+            field=models.CharField(
+                default="BROWSER", max_length=20, verbose_name="语音播放类型"
+            ),
         ),
     ]

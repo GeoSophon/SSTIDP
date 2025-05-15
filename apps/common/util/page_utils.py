@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
-    @file： page_utils.py
-    @date：2024/11/21 10:32
-    @desc:
+@project: MaxKB
+@Author：虎
+@file： page_utils.py
+@date：2024/11/21 10:32
+@desc:
 """
+
 from math import ceil
 
 
@@ -24,7 +25,7 @@ def page(query_set, page_size, handler, is_the_task_interrupted=lambda: False):
         if is_the_task_interrupted():
             return
         offset = i * page_size
-        paragraph_list = query.all()[offset: offset + page_size]
+        paragraph_list = query.all()[offset : offset + page_size]
         handler(paragraph_list)
 
 
@@ -43,5 +44,5 @@ def page_desc(query_set, page_size, handler, is_the_task_interrupted=lambda: Fal
         if is_the_task_interrupted():
             return
         offset = i * page_size
-        paragraph_list = query.all()[offset: offset + page_size]
+        paragraph_list = query.all()[offset : offset + page_size]
         handler(paragraph_list)

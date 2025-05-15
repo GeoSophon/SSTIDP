@@ -15,30 +15,32 @@ class CsvSplitHandle(BaseParseTableHandle):
             return True
         return False
 
-    def handle(self, file, get_buffer,save_image):
+    def handle(self, file, get_buffer, save_image):
         buffer = get_buffer(file)
         try:
-            content = buffer.decode(detect(buffer)['encoding'])
+            content = buffer.decode(detect(buffer)["encoding"])
         except BaseException as e:
-            max_kb.error(f'csv split handle error: {e}')
-            return [{'name': file.name, 'paragraphs': []}]
+            max_kb.error(f"csv split handle error: {e}")
+            return [{"name": file.name, "paragraphs": []}]
 
-        csv_model = content.split('\n')
+        csv_model = content.split("\n")
         paragraphs = []
         # 第一行为标题
-        title = csv_model[0].split(',')
+        title = csv_model[0].split(",")
         for row in csv_model[1:]:
             if not row:
                 continue
-            line = '; '.join([f'{key}:{value}' for key, value in zip(title, row.split(','))])
-            paragraphs.append({'title': '', 'content': line})
+            line = "; ".join(
+                [f"{key}:{value}" for key, value in zip(title, row.split(","))]
+            )
+            paragraphs.append({"title": "", "content": line})
 
-        return [{'name': file.name, 'paragraphs': paragraphs}]
+        return [{"name": file.name, "paragraphs": paragraphs}]
 
     def get_content(self, file, save_image):
         buffer = file.read()
         try:
-            return buffer.decode(detect(buffer)['encoding'])
+            return buffer.decode(detect(buffer)["encoding"])
         except BaseException as e:
-            max_kb.error(f'csv split handle error: {e}')
-            return f'error: {e}'
+            max_kb.error(f"csv split handle error: {e}")
+            return f"error: {e}"

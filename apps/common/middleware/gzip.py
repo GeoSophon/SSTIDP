@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
-    @file： gzip.py
-    @date：2025/2/27 10:03
-    @desc:
+@project: MaxKB
+@Author：虎
+@file： gzip.py
+@date：2025/2/27 10:03
+@desc:
 """
+
 from django.utils.cache import patch_vary_headers
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.regex_helper import _lazy_re_compile
@@ -24,7 +25,7 @@ class GZipMiddleware(MiddlewareMixin):
     max_random_bytes = 100
 
     def process_response(self, request, response):
-        if request.method != 'GET' or request.path.startswith('/api'):
+        if request.method != "GET" or request.path.startswith("/api"):
             return response
         # It's not worth attempting to compress really short responses.
         if not response.streaming and len(response.content) < 200:

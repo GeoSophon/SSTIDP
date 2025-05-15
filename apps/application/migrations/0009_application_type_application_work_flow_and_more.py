@@ -6,33 +6,61 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0008_chat_is_deleted'),
+        ("application", "0008_chat_is_deleted"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='application',
-            name='type',
-            field=models.CharField(choices=[('SIMPLE', '简易'), ('WORK_FLOW', '工作流')], default='SIMPLE', max_length=256, verbose_name='应用类型'),
+            model_name="application",
+            name="type",
+            field=models.CharField(
+                choices=[("SIMPLE", "简易"), ("WORK_FLOW", "工作流")],
+                default="SIMPLE",
+                max_length=256,
+                verbose_name="应用类型",
+            ),
         ),
         migrations.AddField(
-            model_name='application',
-            name='work_flow',
-            field=models.JSONField(default=dict, verbose_name='工作流数据'),
+            model_name="application",
+            name="work_flow",
+            field=models.JSONField(default=dict, verbose_name="工作流数据"),
         ),
         migrations.CreateModel(
-            name='WorkFlowVersion',
+            name="WorkFlowVersion",
             fields=[
-                ('create_time', models.DateTimeField(auto_now_add=True, verbose_name='创建时间')),
-                ('update_time', models.DateTimeField(auto_now=True, verbose_name='修改时间')),
-                ('id', models.UUIDField(default=uuid.uuid1, editable=False, primary_key=True, serialize=False, verbose_name='主键id')),
-                ('work_flow', models.JSONField(default=dict, verbose_name='工作流数据')),
-                ('application', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='application.application')),
+                (
+                    "create_time",
+                    models.DateTimeField(auto_now_add=True, verbose_name="创建时间"),
+                ),
+                (
+                    "update_time",
+                    models.DateTimeField(auto_now=True, verbose_name="修改时间"),
+                ),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid1,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="主键id",
+                    ),
+                ),
+                (
+                    "work_flow",
+                    models.JSONField(default=dict, verbose_name="工作流数据"),
+                ),
+                (
+                    "application",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="application.application",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'application_work_flow_version',
+                "db_table": "application_work_flow_version",
             },
         ),
     ]

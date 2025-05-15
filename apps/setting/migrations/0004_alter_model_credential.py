@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('setting', '0003_model_meta_model_status'),
+        ("setting", "0003_model_meta_model_status"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='model',
-            name='credential',
-            field=models.CharField(max_length=102400, verbose_name='模型认证信息'),
+            model_name="model",
+            name="credential",
+            field=models.CharField(max_length=102400, verbose_name="模型认证信息"),
         ),
     ]

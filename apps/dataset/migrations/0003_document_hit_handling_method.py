@@ -4,15 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dataset', '0002_image'),
+        ("dataset", "0002_image"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='document',
-            name='hit_handling_method',
-            field=models.CharField(choices=[('optimization', '模型优化'), ('directly_return', '直接返回')], default='optimization', max_length=20, verbose_name='命中处理方式'),
+            model_name="document",
+            name="hit_handling_method",
+            field=models.CharField(
+                choices=[("optimization", "模型优化"), ("directly_return", "直接返回")],
+                default="optimization",
+                max_length=20,
+                verbose_name="命中处理方式",
+            ),
         ),
     ]

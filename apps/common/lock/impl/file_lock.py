@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
-    @file： file_lock.py
-    @date：2024/8/20 10:48
-    @desc:
+@project: MaxKB
+@Author：虎
+@file： file_lock.py
+@date：2024/8/20 10:48
+@desc:
 """
+
 import errno
 import hashlib
 import os
@@ -23,21 +24,21 @@ def key_to_lock_name(key):
     """
     MAX_LENGTH = 50
     key_hash = hashlib.md5(six.b(key)).hexdigest()
-    lock_name = key[:MAX_LENGTH - len(key_hash) - 1] + '_' + key_hash
+    lock_name = key[: MAX_LENGTH - len(key_hash) - 1] + "_" + key_hash
     return lock_name
 
 
 class FileLock(BaseLock):
     """
-     File locking backend.
-     """
+    File locking backend.
+    """
 
     def __init__(self, settings=None):
         if settings is None:
             settings = {}
-        self.location = settings.get('location')
+        self.location = settings.get("location")
         if self.location is None:
-            self.location = os.path.join(PROJECT_DIR, 'data', 'lock')
+            self.location = os.path.join(PROJECT_DIR, "data", "lock")
         try:
             os.makedirs(self.location)
         except OSError as error:

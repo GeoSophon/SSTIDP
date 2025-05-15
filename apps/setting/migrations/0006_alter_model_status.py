@@ -4,15 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('setting', '0005_model_permission_type'),
+        ("setting", "0005_model_permission_type"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='model',
-            name='status',
-            field=models.CharField(choices=[('SUCCESS', '成功'), ('ERROR', '失败'), ('DOWNLOAD', '下载中'), ('PAUSE_DOWNLOAD', '暂停下载')], default='SUCCESS', max_length=20, verbose_name='设置类型'),
+            model_name="model",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("SUCCESS", "成功"),
+                    ("ERROR", "失败"),
+                    ("DOWNLOAD", "下载中"),
+                    ("PAUSE_DOWNLOAD", "暂停下载"),
+                ],
+                default="SUCCESS",
+                max_length=20,
+                verbose_name="设置类型",
+            ),
         ),
     ]

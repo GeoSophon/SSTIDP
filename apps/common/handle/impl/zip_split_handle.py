@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： text_split_handle.py
-    @date：2024/3/27 18:19
-    @desc:
+@project: maxkb
+@Author：虎
+@file： text_split_handle.py
+@date：2024/3/27 18:19
+@desc:
 """
+
 import io
 import os
 import re
@@ -39,9 +40,15 @@ class FileBufferHandle:
 
 
 default_split_handle = TextSplitHandle()
-split_handles = [HTMLSplitHandle(), DocSplitHandle(), PdfSplitHandle(), XlsxSplitHandle(), XlsSplitHandle(),
-                 CsvSplitHandle(),
-                 default_split_handle]
+split_handles = [
+    HTMLSplitHandle(),
+    DocSplitHandle(),
+    PdfSplitHandle(),
+    XlsxSplitHandle(),
+    XlsSplitHandle(),
+    CsvSplitHandle(),
+    default_split_handle,
+]
 
 
 def save_inner_image(image_list):
@@ -53,8 +60,10 @@ def file_to_paragraph(file, pattern_list: List, with_filter: bool, limit: int):
     get_buffer = FileBufferHandle().get_buffer
     for split_handle in split_handles:
         if split_handle.support(file, get_buffer):
-            return split_handle.handle(file, pattern_list, with_filter, limit, get_buffer, save_inner_image)
-    raise Exception(_('Unsupported file format'))
+            return split_handle.handle(
+                file, pattern_list, with_filter, limit, get_buffer, save_inner_image
+            )
+    raise Exception(_("Unsupported file format"))
 
 
 def is_valid_uuid(uuid_str: str):
@@ -68,55 +77,82 @@ def is_valid_uuid(uuid_str: str):
 def get_image_list(result_list: list, zip_files: List[str]):
     image_file_list = []
     for result in result_list:
-        for p in result.get('content', []):
-            content: str = p.get('content', '')
+        for p in result.get("content", []):
+            content: str = p.get("content", "")
             image_list = parse_md_image(content)
             for image in image_list:
                 search = re.search("\(.*\)", image)
                 if search:
                     new_image_id = str(uuid.uuid1())
-                    source_image_path = search.group().replace('(', '').replace(')', '')
+                    source_image_path = search.group().replace("(", "").replace(")", "")
                     source_image_path = source_image_path.strip().split(" ")[0]
-                    image_path = urljoin(result.get('name'), '.' + source_image_path if source_image_path.startswith(
-                        '/') else source_image_path)
+                    image_path = urljoin(
+                        result.get("name"),
+                        "." + source_image_path
+                        if source_image_path.startswith("/")
+                        else source_image_path,
+                    )
                     if not zip_files.__contains__(image_path):
                         continue
-                    if image_path.startswith('api/file/') or image_path.startswith('api/image/'):
-                        image_id = image_path.replace('api/file/', '').replace('api/image/', '')
+                    if image_path.startswith("api/file/") or image_path.startswith(
+                        "api/image/"
+                    ):
+                        image_id = image_path.replace("api/file/", "").replace(
+                            "api/image/", ""
+                        )
                         if is_valid_uuid(image_id):
-                            image_file_list.append({'source_file': image_path,
-                                                    'image_id': image_id})
+                            image_file_list.append(
+                                {"source_file": image_path, "image_id": image_id}
+                            )
                         else:
-                            image_file_list.append({'source_file': image_path,
-                                                    'image_id': new_image_id})
-                            content = content.replace(source_image_path, f'/api/image/{new_image_id}')
-                            p['content'] = content
+                            image_file_list.append(
+                                {"source_file": image_path, "image_id": new_image_id}
+                            )
+                            content = content.replace(
+                                source_image_path, f"/api/image/{new_image_id}"
+                            )
+                            p["content"] = content
                     else:
-                        image_file_list.append({'source_file': image_path,
-                                                'image_id': new_image_id})
-                        content = content.replace(source_image_path, f'/api/image/{new_image_id}')
-                        p['content'] = content
+                        image_file_list.append(
+                            {"source_file": image_path, "image_id": new_image_id}
+                        )
+                        content = content.replace(
+                            source_image_path, f"/api/image/{new_image_id}"
+                        )
+                        p["content"] = content
 
     return image_file_list
 
 
 def filter_image_file(result_list: list, image_list):
-    image_source_file_list = [image.get('source_file') for image in image_list]
-    return [r for r in result_list if not image_source_file_list.__contains__(r.get('name', ''))]
+    image_source_file_list = [image.get("source_file") for image in image_list]
+    return [
+        r
+        for r in result_list
+        if not image_source_file_list.__contains__(r.get("name", ""))
+    ]
 
 
 class ZipSplitHandle(BaseSplitHandle):
-    def handle(self, file, pattern_list: List, with_filter: bool, limit: int, get_buffer, save_image):
+    def handle(
+        self,
+        file,
+        pattern_list: List,
+        with_filter: bool,
+        limit: int,
+        get_buffer,
+        save_image,
+    ):
         buffer = get_buffer(file)
         bytes_io = io.BytesIO(buffer)
         result = []
         # 打开zip文件
-        with zipfile.ZipFile(bytes_io, 'r') as zip_ref:
+        with zipfile.ZipFile(bytes_io, "r") as zip_ref:
             # 获取压缩包中的文件名列表
             files = zip_ref.namelist()
             # 读取压缩包中的文件内容
             for file in files:
-                if file.endswith('/'):
+                if file.endswith("/"):
                     continue
                 with zip_ref.open(file) as f:
                     # 对文件内容进行处理
@@ -132,9 +168,12 @@ class ZipSplitHandle(BaseSplitHandle):
             result = filter_image_file(result, image_list)
             image_mode_list = []
             for image in image_list:
-                with zip_ref.open(image.get('source_file')) as f:
-                    i = Image(id=image.get('image_id'), image=f.read(),
-                              image_name=os.path.basename(image.get('source_file')))
+                with zip_ref.open(image.get("source_file")) as f:
+                    i = Image(
+                        id=image.get("image_id"),
+                        image=f.read(),
+                        image_name=os.path.basename(image.get("source_file")),
+                    )
                     image_mode_list.append(i)
             save_image(image_mode_list)
         return result

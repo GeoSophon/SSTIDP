@@ -20,21 +20,25 @@ class SiliconCloudTextToImage(MaxKBBaseModel, BaseTextToImage):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.api_key = kwargs.get('api_key')
-        self.api_base = kwargs.get('api_base')
-        self.model = kwargs.get('model')
-        self.params = kwargs.get('params')
+        self.api_key = kwargs.get("api_key")
+        self.api_base = kwargs.get("api_base")
+        self.model = kwargs.get("model")
+        self.params = kwargs.get("params")
 
     @staticmethod
-    def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = {'params': {'size': '1024x1024', 'quality': 'standard', 'n': 1}}
+    def new_instance(
+        model_type, model_name, model_credential: Dict[str, object], **model_kwargs
+    ):
+        optional_params = {
+            "params": {"size": "1024x1024", "quality": "standard", "n": 1}
+        }
         for key, value in model_kwargs.items():
-            if key not in ['model_id', 'use_local', 'streaming']:
-                optional_params['params'][key] = value
+            if key not in ["model_id", "use_local", "streaming"]:
+                optional_params["params"][key] = value
         return SiliconCloudTextToImage(
             model=model_name,
-            api_base=model_credential.get('api_base'),
-            api_key=model_credential.get('api_key'),
+            api_base=model_credential.get("api_base"),
+            api_key=model_credential.get("api_key"),
             **optional_params,
         )
 
@@ -43,7 +47,7 @@ class SiliconCloudTextToImage(MaxKBBaseModel, BaseTextToImage):
 
     def check_auth(self):
         chat = OpenAI(api_key=self.api_key, base_url=self.api_base)
-        response_list = chat.models.with_raw_response.list()
+        chat.models.with_raw_response.list()
 
         # self.generate_image('生成一个小猫图片')
 

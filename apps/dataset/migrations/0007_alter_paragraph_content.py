@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dataset', '0006_dataset_embedding_mode'),
+        ("dataset", "0006_dataset_embedding_mode"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='paragraph',
-            name='content',
-            field=models.CharField(max_length=102400, verbose_name='段落内容'),
+            model_name="paragraph",
+            name="content",
+            field=models.CharField(max_length=102400, verbose_name="段落内容"),
         ),
     ]

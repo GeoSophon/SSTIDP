@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0002_chat_client_id'),
+        ("application", "0002_chat_client_id"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='application',
-            name='icon',
-            field=models.CharField(default='/ui/favicon.ico', max_length=256, verbose_name='应用icon'),
+            model_name="application",
+            name="icon",
+            field=models.CharField(
+                default="/ui/favicon.ico", max_length=256, verbose_name="应用icon"
+            ),
         ),
     ]

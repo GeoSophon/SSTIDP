@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
-    @file： tools.py
-    @date：2024/7/22 11:18
-    @desc:
+@project: MaxKB
+@Author：虎
+@file： tools.py
+@date：2024/7/22 11:18
+@desc:
 """
+
 from django.db import connection
 from django.db.models import QuerySet
 
@@ -20,9 +21,9 @@ def get_model_by_id(_id, user_id):
     # 手动关闭数据库连接
     connection.close()
     if model is None:
-        raise Exception(_('Model does not exist'))
-    if model.permission_type == 'PRIVATE' and str(model.user_id) != str(user_id):
-        raise Exception(_('No permission to use this model') + f"{model.name}")
+        raise Exception(_("Model does not exist"))
+    if model.permission_type == "PRIVATE" and str(model.user_id) != str(user_id):
+        raise Exception(_("No permission to use this model") + f"{model.name}")
     return model
 
 

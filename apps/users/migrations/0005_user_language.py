@@ -5,13 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('users', '0004_alter_user_email'),
+        ("users", "0004_alter_user_email"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='language',
-            field=models.CharField(default=None, null=True, max_length=10, verbose_name='语言'),
+            model_name="user",
+            name="language",
+            field=models.CharField(
+                default=None, null=True, max_length=10, verbose_name="语言"
+            ),
         ),
     ]

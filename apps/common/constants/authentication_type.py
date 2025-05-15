@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： authentication_type.py
-    @date：2023/11/14 20:03
-    @desc:
+@project: maxkb
+@Author：虎
+@file： authentication_type.py
+@date：2023/11/14 20:03
+@desc:
 """
+
 from enum import Enum
 
 
@@ -17,4 +18,4 @@ class AuthenticationType(Enum):
     # key API
     API_KEY = "API_KEY"
     # 第三方对接
-    PLATFORM = 'PLATFORM'
+    PLATFORM = "PLATFORM"

@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： base_model_provider.py
-    @date：2023/10/31 16:19
-    @desc:
+@project: maxkb
+@Author：虎
+@file： base_model_provider.py
+@date：2023/10/31 16:19
+@desc:
 """
+
 from abc import ABC, abstractmethod
 from enum import Enum
 from functools import reduce
@@ -23,7 +24,7 @@ class DownModelChunkStatus(Enum):
     success = "success"
     error = "error"
     pulling = "pulling"
-    unknown = 'unknown'
+    unknown = "unknown"
 
 
 class ValidCode(Enum):
@@ -32,7 +33,14 @@ class ValidCode(Enum):
 
 
 class DownModelChunk:
-    def __init__(self, status: DownModelChunkStatus, digest: str, progress: int, details: str, index: int):
+    def __init__(
+        self,
+        status: DownModelChunkStatus,
+        digest: str,
+        progress: int,
+        details: str,
+        index: int,
+    ):
         self.details = details
         self.status = status
         self.digest = digest
@@ -45,7 +53,7 @@ class DownModelChunk:
             "status": self.status.value,
             "digest": self.digest,
             "progress": self.progress,
-            "index": self.index
+            "index": self.index,
         }
 
 
@@ -63,7 +71,7 @@ class IModelProvider(ABC):
 
     def get_model_list(self, model_type):
         if model_type is None:
-            raise AppApiException(500, _('Model type cannot be empty'))
+            raise AppApiException(500, _("Model type cannot be empty"))
         return self.get_model_info_manage().get_model_list_by_model_type(model_type)
 
     def get_model_credential(self, model_type, model_name):
@@ -74,27 +82,53 @@ class IModelProvider(ABC):
         model_info = self.get_model_info_manage().get_model_info(model_type, model_name)
         return model_info.model_credential
 
-    def is_valid_credential(self, model_type, model_name, model_credential: Dict[str, object],
-                            model_params: Dict[str, object], raise_exception=False):
+    def is_valid_credential(
+        self,
+        model_type,
+        model_name,
+        model_credential: Dict[str, object],
+        model_params: Dict[str, object],
+        raise_exception=False,
+    ):
         model_info = self.get_model_info_manage().get_model_info(model_type, model_name)
-        return model_info.model_credential.is_valid(model_type, model_name, model_credential, model_params, self,
-                                                    raise_exception=raise_exception)
+        return model_info.model_credential.is_valid(
+            model_type,
+            model_name,
+            model_credential,
+            model_params,
+            self,
+            raise_exception=raise_exception,
+        )
 
-    def get_model(self, model_type, model_name, model_credential: Dict[str, object], **model_kwargs) -> BaseModel:
+    def get_model(
+        self,
+        model_type,
+        model_name,
+        model_credential: Dict[str, object],
+        **model_kwargs,
+    ) -> BaseModel:
         model_info = self.get_model_info_manage().get_model_info(model_type, model_name)
-        return model_info.model_class.new_instance(model_type, model_name, model_credential, **model_kwargs)
+        return model_info.model_class.new_instance(
+            model_type, model_name, model_credential, **model_kwargs
+        )
 
     def get_dialogue_number(self):
         return 3
 
-    def down_model(self, model_type: str, model_name, model_credential: Dict[str, object]) -> Iterator[DownModelChunk]:
-        raise AppApiException(500, _('The current platform does not support downloading models'))
+    def down_model(
+        self, model_type: str, model_name, model_credential: Dict[str, object]
+    ) -> Iterator[DownModelChunk]:
+        raise AppApiException(
+            500, _("The current platform does not support downloading models")
+        )
 
 
 class MaxKBBaseModel(ABC):
     @staticmethod
     @abstractmethod
-    def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
+    def new_instance(
+        model_type, model_name, model_credential: Dict[str, object], **model_kwargs
+    ):
         pass
 
     @staticmethod
@@ -105,16 +139,22 @@ class MaxKBBaseModel(ABC):
     def filter_optional_params(model_kwargs):
         optional_params = {}
         for key, value in model_kwargs.items():
-            if key not in ['model_id', 'use_local', 'streaming', 'show_ref_label']:
+            if key not in ["model_id", "use_local", "streaming", "show_ref_label"]:
                 optional_params[key] = value
         return optional_params
 
 
 class BaseModelCredential(ABC):
-
     @abstractmethod
-    def is_valid(self, model_type: str, model_name, model: Dict[str, object], model_params, provider,
-                 raise_exception=True):
+    def is_valid(
+        self,
+        model_type: str,
+        model_name,
+        model: Dict[str, object],
+        model_params,
+        provider,
+        raise_exception=True,
+    ):
         pass
 
     @abstractmethod
@@ -127,8 +167,8 @@ class BaseModelCredential(ABC):
 
     def get_model_params_setting_form(self, model_name):
         """
-               模型参数设置表单
-               :return:
+        模型参数设置表单
+        :return:
         """
         pass
 
@@ -143,19 +183,25 @@ class BaseModelCredential(ABC):
 
 
 class ModelTypeConst(Enum):
-    LLM = {'code': 'LLM', 'message': _('LLM')}
-    EMBEDDING = {'code': 'EMBEDDING', 'message': _('Embedding Model')}
-    STT = {'code': 'STT', 'message': _('Speech2Text')}
-    TTS = {'code': 'TTS', 'message': _('TTS')}
-    IMAGE = {'code': 'IMAGE', 'message': _('Vision Model')}
-    TTI = {'code': 'TTI', 'message': _('Image Generation')}
-    RERANKER = {'code': 'RERANKER', 'message': _('Rerank')}
+    LLM = {"code": "LLM", "message": _("LLM")}
+    EMBEDDING = {"code": "EMBEDDING", "message": _("Embedding Model")}
+    STT = {"code": "STT", "message": _("Speech2Text")}
+    TTS = {"code": "TTS", "message": _("TTS")}
+    IMAGE = {"code": "IMAGE", "message": _("Vision Model")}
+    TTI = {"code": "TTI", "message": _("Image Generation")}
+    RERANKER = {"code": "RERANKER", "message": _("Rerank")}
 
 
 class ModelInfo:
-    def __init__(self, name: str, desc: str, model_type: ModelTypeConst, model_credential: BaseModelCredential,
-                 model_class: Type[MaxKBBaseModel],
-                 **keywords):
+    def __init__(
+        self,
+        name: str,
+        desc: str,
+        model_type: ModelTypeConst,
+        model_credential: BaseModelCredential,
+        model_class: Type[MaxKBBaseModel],
+        **keywords,
+    ):
         self.name = name
         self.desc = desc
         self.model_type = model_type.name
@@ -186,9 +232,17 @@ class ModelInfo:
         return self.model_class
 
     def to_dict(self):
-        return reduce(lambda x, y: {**x, **y},
-                      [{attr: self.__getattribute__(attr)} for attr in vars(self) if
-                       not attr.startswith("__") and not attr == 'model_credential' and not attr == 'model_class'], {})
+        return reduce(
+            lambda x, y: {**x, **y},
+            [
+                {attr: self.__getattribute__(attr)}
+                for attr in vars(self)
+                if not attr.startswith("__")
+                and not attr == "model_credential"
+                and not attr == "model_class"
+            ],
+            {},
+        )
 
 
 class ModelInfoManage:
@@ -214,16 +268,28 @@ class ModelInfoManage:
         return [model.to_dict() for model in self.model_list]
 
     def get_model_list_by_model_type(self, model_type):
-        return [model.to_dict() for model in self.model_list if model.model_type == model_type]
+        return [
+            model.to_dict()
+            for model in self.model_list
+            if model.model_type == model_type
+        ]
 
     def get_model_type_list(self):
-        return [{'key': _type.value.get('message'), 'value': _type.value.get('code')} for _type in ModelTypeConst if
-                len([model for model in self.model_list if model.model_type == _type.name]) > 0]
+        return [
+            {"key": _type.value.get("message"), "value": _type.value.get("code")}
+            for _type in ModelTypeConst
+            if len(
+                [model for model in self.model_list if model.model_type == _type.name]
+            )
+            > 0
+        ]
 
     def get_model_info(self, model_type, model_name) -> ModelInfo:
-        model_info = self.model_dict.get(model_type, {}).get(model_name, self.default_model_dict.get(model_type))
+        model_info = self.model_dict.get(model_type, {}).get(
+            model_name, self.default_model_dict.get(model_type)
+        )
         if model_info is None:
-            raise AppApiException(500, _('The model does not support'))
+            raise AppApiException(500, _("The model does not support"))
         return model_info
 
     class builder:
@@ -256,6 +322,12 @@ class ModelProvideInfo:
         self.icon = icon
 
     def to_dict(self):
-        return reduce(lambda x, y: {**x, **y},
-                      [{attr: self.__getattribute__(attr)} for attr in vars(self) if
-                       not attr.startswith("__")], {})
+        return reduce(
+            lambda x, y: {**x, **y},
+            [
+                {attr: self.__getattribute__(attr)}
+                for attr in vars(self)
+                if not attr.startswith("__")
+            ],
+            {},
+        )

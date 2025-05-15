@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： __init__.py
-    @date：2023/11/10 10:43
-    @desc:
+@project: maxkb
+@Author：虎
+@file： __init__.py
+@date：2023/11/10 10:43
+@desc:
 """
+
 import setting.models
 from setting.models import Model
 from .listener_manage import *
@@ -23,11 +24,16 @@ WHERE status ~ '1|0|4'
 
 
 def run():
-    if lock.try_lock('event_init', 30 * 30):
+    if lock.try_lock("event_init", 30 * 30):
         try:
-            QuerySet(Model).filter(status=setting.models.Status.DOWNLOAD).update(status=setting.models.Status.ERROR,
-                                                                                 meta={'message': _(
-                                                                                     'The download process was interrupted, please try again')})
+            QuerySet(Model).filter(status=setting.models.Status.DOWNLOAD).update(
+                status=setting.models.Status.ERROR,
+                meta={
+                    "message": _(
+                        "The download process was interrupted, please try again"
+                    )
+                },
+            )
             update_execute(update_document_status_sql, [])
         finally:
-            lock.un_lock('event_init')
+            lock.un_lock("event_init")

@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
-    @file： SystemEncoder.py
-    @date：2025/3/17 16:38
-    @desc:
+@project: MaxKB
+@Author：虎
+@file： SystemEncoder.py
+@date：2025/3/17 16:38
+@desc:
 """
+
 import datetime
 import decimal
 import json
@@ -23,8 +24,8 @@ class SystemEncoder(json.JSONEncoder):
         if isinstance(obj, decimal.Decimal):
             return float(obj)
         if isinstance(obj, InMemoryUploadedFile):
-            return {'name': obj.name, 'size': obj.size}
+            return {"name": obj.name, "size": obj.size}
         if isinstance(obj, TemporaryUploadedFile):
-            return {'name': obj.name, 'size': obj.size}
+            return {"name": obj.name, "size": obj.size}
         else:
             return json.JSONEncoder.default(self, obj)

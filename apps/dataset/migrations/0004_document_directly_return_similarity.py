@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dataset', '0003_document_hit_handling_method'),
+        ("dataset", "0003_document_hit_handling_method"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='document',
-            name='directly_return_similarity',
-            field=models.FloatField(default=0.9, verbose_name='直接回答相似度'),
+            model_name="document",
+            name="directly_return_similarity",
+            field=models.FloatField(default=0.9, verbose_name="直接回答相似度"),
         ),
     ]

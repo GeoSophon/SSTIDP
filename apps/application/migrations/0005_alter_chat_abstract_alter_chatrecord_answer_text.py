@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0004_applicationaccesstoken_show_source'),
+        ("application", "0004_applicationaccesstoken_show_source"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='chat',
-            name='abstract',
-            field=models.CharField(max_length=1024, verbose_name='摘要'),
+            model_name="chat",
+            name="abstract",
+            field=models.CharField(max_length=1024, verbose_name="摘要"),
         ),
         migrations.AlterField(
-            model_name='chatrecord',
-            name='answer_text',
-            field=models.CharField(max_length=40960, verbose_name='答案'),
+            model_name="chatrecord",
+            name="answer_text",
+            field=models.CharField(max_length=40960, verbose_name="答案"),
         ),
     ]

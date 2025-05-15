@@ -43,24 +43,26 @@ class XFSparkTextToSpeech(MaxKBBaseModel, BaseTextToSpeech):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.spark_api_url = kwargs.get('spark_api_url')
-        self.spark_app_id = kwargs.get('spark_app_id')
-        self.spark_api_key = kwargs.get('spark_api_key')
-        self.spark_api_secret = kwargs.get('spark_api_secret')
-        self.params = kwargs.get('params')
+        self.spark_api_url = kwargs.get("spark_api_url")
+        self.spark_app_id = kwargs.get("spark_app_id")
+        self.spark_api_key = kwargs.get("spark_api_key")
+        self.spark_api_secret = kwargs.get("spark_api_secret")
+        self.params = kwargs.get("params")
 
     @staticmethod
-    def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = {'params': {'vcn': 'xiaoyan', 'speed': 50}}
+    def new_instance(
+        model_type, model_name, model_credential: Dict[str, object], **model_kwargs
+    ):
+        optional_params = {"params": {"vcn": "xiaoyan", "speed": 50}}
         for key, value in model_kwargs.items():
-            if key not in ['model_id', 'use_local', 'streaming']:
-                optional_params['params'][key] = value
+            if key not in ["model_id", "use_local", "streaming"]:
+                optional_params["params"][key] = value
         return XFSparkTextToSpeech(
-            spark_app_id=model_credential.get('spark_app_id'),
-            spark_api_key=model_credential.get('spark_api_key'),
-            spark_api_secret=model_credential.get('spark_api_secret'),
-            spark_api_url=model_credential.get('spark_api_url'),
-            **optional_params
+            spark_app_id=model_credential.get("spark_app_id"),
+            spark_api_key=model_credential.get("spark_api_key"),
+            spark_api_secret=model_credential.get("spark_api_secret"),
+            spark_api_url=model_credential.get("spark_api_url"),
+            **optional_params,
         )
 
     # 生成url
@@ -68,7 +70,7 @@ class XFSparkTextToSpeech(MaxKBBaseModel, BaseTextToSpeech):
         url = self.spark_api_url
         host = urlparse(url).hostname
         # 生成RFC1123格式的时间戳
-        gmt_format = '%a, %d %b %Y %H:%M:%S GMT'
+        gmt_format = "%a, %d %b %Y %H:%M:%S GMT"
         date = datetime.now(UTC).strftime(gmt_format)
 
         # 拼接字符串
@@ -76,21 +78,29 @@ class XFSparkTextToSpeech(MaxKBBaseModel, BaseTextToSpeech):
         signature_origin += "date: " + date + "\n"
         signature_origin += "GET " + "/v2/tts " + "HTTP/1.1"
         # 进行hmac-sha256进行加密
-        signature_sha = hmac.new(self.spark_api_secret.encode('utf-8'), signature_origin.encode('utf-8'),
-                                 digestmod=hashlib.sha256).digest()
-        signature_sha = base64.b64encode(signature_sha).decode(encoding='utf-8')
+        signature_sha = hmac.new(
+            self.spark_api_secret.encode("utf-8"),
+            signature_origin.encode("utf-8"),
+            digestmod=hashlib.sha256,
+        ).digest()
+        signature_sha = base64.b64encode(signature_sha).decode(encoding="utf-8")
 
-        authorization_origin = "api_key=\"%s\", algorithm=\"%s\", headers=\"%s\", signature=\"%s\"" % (
-            self.spark_api_key, "hmac-sha256", "host date request-line", signature_sha)
-        authorization = base64.b64encode(authorization_origin.encode('utf-8')).decode(encoding='utf-8')
+        authorization_origin = (
+            'api_key="%s", algorithm="%s", headers="%s", signature="%s"'
+            % (
+                self.spark_api_key,
+                "hmac-sha256",
+                "host date request-line",
+                signature_sha,
+            )
+        )
+        authorization = base64.b64encode(authorization_origin.encode("utf-8")).decode(
+            encoding="utf-8"
+        )
         # 将请求的鉴权参数组合为字典
-        v = {
-            "authorization": authorization,
-            "date": date,
-            "host": host
-        }
+        v = {"authorization": authorization, "date": date, "host": host}
         # 拼接鉴权参数，生成url
-        url = url + '?' + urlencode(v)
+        url = url + "?" + urlencode(v)
         # print("date: ",date)
         # print("v: ",v)
         # 此处打印出建立连接时候的url,参考本demo的时候可取消上方打印的注释，比对相同参数时生成的url与自己代码生成的url是否一致
@@ -98,16 +108,17 @@ class XFSparkTextToSpeech(MaxKBBaseModel, BaseTextToSpeech):
         return url
 
     def check_auth(self):
-        self.text_to_speech(_('Hello'))
+        self.text_to_speech(_("Hello"))
 
     def text_to_speech(self, text):
-
         # 使用小语种须使用以下方式，此处的unicode指的是 utf16小端的编码方式，即"UTF-16LE"”
         # self.Data = {"status": 2, "text": str(base64.b64encode(self.Text.encode('utf-16')), "UTF8")}
         text = _remove_empty_lines(text)
 
         async def handle():
-            async with websockets.connect(self.create_url(), max_size=1000000000, ssl=ssl_context) as ws:
+            async with websockets.connect(
+                self.create_url(), max_size=1000000000, ssl=ssl_context
+            ) as ws:
                 # 发送 full client request
                 await self.send(ws, text)
                 return await self.handle_message(ws)
@@ -119,7 +130,7 @@ class XFSparkTextToSpeech(MaxKBBaseModel, BaseTextToSpeech):
 
     @staticmethod
     async def handle_message(ws):
-        audio_bytes: bytes = b''
+        audio_bytes: bytes = b""
         while True:
             res = await ws.recv()
             message = json.loads(res)
@@ -140,11 +151,19 @@ class XFSparkTextToSpeech(MaxKBBaseModel, BaseTextToSpeech):
         return audio_bytes
 
     async def send(self, ws, text):
-        business = {"aue": "lame", "sfl": 1, "auf": "audio/L16;rate=16000", "tte": "utf8"}
+        business = {
+            "aue": "lame",
+            "sfl": 1,
+            "auf": "audio/L16;rate=16000",
+            "tte": "utf8",
+        }
         d = {
             "common": {"app_id": self.spark_app_id},
             "business": business | self.params,
-            "data": {"status": 2, "text": str(base64.b64encode(text.encode('utf-8')), "UTF8")},
+            "data": {
+                "status": 2,
+                "text": str(base64.b64encode(text.encode("utf-8")), "UTF8"),
+            },
         }
         d = json.dumps(d)
         await ws.send(d)

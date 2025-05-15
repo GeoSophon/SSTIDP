@@ -6,15 +6,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0025_alter_application_prologue'),
+        ("application", "0025_alter_application_prologue"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='chat',
-            name='asker',
-            field=models.JSONField(default=application.models.application.default_asker, encoder=common.encoder.encoder.SystemEncoder, verbose_name='访问者'),
+            model_name="chat",
+            name="asker",
+            field=models.JSONField(
+                default=application.models.application.default_asker,
+                encoder=common.encoder.encoder.SystemEncoder,
+                verbose_name="访问者",
+            ),
         ),
     ]

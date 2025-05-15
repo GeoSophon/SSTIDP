@@ -13,7 +13,7 @@ max_kb = logging.getLogger("max_kb")
 class XlsxSplitHandle(BaseParseTableHandle):
     def support(self, file, get_buffer):
         file_name: str = file.name.lower()
-        if file_name.endswith('.xlsx'):
+        if file_name.endswith(".xlsx"):
             return True
         return False
 
@@ -24,7 +24,7 @@ class XlsxSplitHandle(BaseParseTableHandle):
         headers = []
         for idx, cell in enumerate(sheet[1]):
             if cell.value is None:
-                headers.append(' ' * (idx + 1))
+                headers.append(" " * (idx + 1))
             else:
                 headers.append(cell.value)
 
@@ -38,12 +38,14 @@ class XlsxSplitHandle(BaseParseTableHandle):
                 if cell_value is None:
                     for merged_range in sheet.merged_cells.ranges:
                         if cell.coordinate in merged_range:
-                            cell_value = sheet[merged_range.min_row][merged_range.min_col - 1].value
+                            cell_value = sheet[merged_range.min_row][
+                                merged_range.min_col - 1
+                            ].value
                             break
 
                 image = image_dict.get(cell_value, None)
                 if image is not None:
-                    cell_value = f'![](/api/image/{image.id})'
+                    cell_value = f"![](/api/image/{image.id})"
 
                 # 使用标题作为键，单元格的值作为值存入字典
                 row_data[headers[col_idx]] = cell_value
@@ -58,7 +60,7 @@ class XlsxSplitHandle(BaseParseTableHandle):
             try:
                 image_dict: dict = xlsx_embed_cells_images(io.BytesIO(buffer))
                 save_image([item for item in image_dict.values()])
-            except Exception as e:
+            except Exception:
                 image_dict = {}
             result = []
             for sheetname in wb.sheetnames:
@@ -67,17 +69,18 @@ class XlsxSplitHandle(BaseParseTableHandle):
                 data = self.fill_merged_cells(ws, image_dict)
 
                 for row in data:
-                    row_output = "; ".join([f"{key}: {value}" for key, value in row.items()])
+                    row_output = "; ".join(
+                        [f"{key}: {value}" for key, value in row.items()]
+                    )
                     # print(row_output)
-                    paragraphs.append({'title': '', 'content': row_output})
+                    paragraphs.append({"title": "", "content": row_output})
 
-                result.append({'name': sheetname, 'paragraphs': paragraphs})
+                result.append({"name": sheetname, "paragraphs": paragraphs})
 
         except BaseException as e:
-            max_kb.error(f'excel split handle error: {e}')
-            return [{'name': file.name, 'paragraphs': []}]
+            max_kb.error(f"excel split handle error: {e}")
+            return [{"name": file.name, "paragraphs": []}]
         return result
-
 
     def get_content(self, file, save_image):
         try:
@@ -88,9 +91,9 @@ class XlsxSplitHandle(BaseParseTableHandle):
                 if len(image_dict) > 0:
                     save_image(image_dict.values())
             except Exception as e:
-                print(f'{e}')
+                print(f"{e}")
                 image_dict = {}
-            md_tables = ''
+            md_tables = ""
             # 如果未指定 sheet_name，则使用第一个工作表
             for sheetname in workbook.sheetnames:
                 sheet = workbook[sheetname] if sheetname else workbook.active
@@ -102,17 +105,27 @@ class XlsxSplitHandle(BaseParseTableHandle):
                 headers = [f"{key}" for key, value in rows[0].items()]
 
                 # 构建 Markdown 表格
-                md_table = '| ' + ' | '.join(headers) + ' |\n'
-                md_table += '| ' + ' | '.join(['---'] * len(headers)) + ' |\n'
+                md_table = "| " + " | ".join(headers) + " |\n"
+                md_table += "| " + " | ".join(["---"] * len(headers)) + " |\n"
                 for row in rows:
-                    r = [f'{value}' for key, value in row.items()]
-                    md_table += '| ' + ' | '.join(
-                        [str(cell).replace('\n', '<br>') if cell is not None else '' for cell in r]) + ' |\n'
+                    r = [f"{value}" for key, value in row.items()]
+                    md_table += (
+                        "| "
+                        + " | ".join(
+                            [
+                                str(cell).replace("\n", "<br>")
+                                if cell is not None
+                                else ""
+                                for cell in r
+                            ]
+                        )
+                        + " |\n"
+                    )
 
-                md_tables += md_table + '\n\n'
+                md_tables += md_table + "\n\n"
 
-                md_tables = md_tables.replace('/api/image/', '/api/file/')
+                md_tables = md_tables.replace("/api/image/", "/api/file/")
             return md_tables
         except Exception as e:
-            max_kb.error(f'excel split handle error: {e}')
-            return f'error: {e}'
+            max_kb.error(f"excel split handle error: {e}")
+            return f"error: {e}"

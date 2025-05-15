@@ -1,4 +1,4 @@
-from django.db import migrations, connection
+from django.db import migrations
 
 batch_update_update_time = """
 UPDATE application_chat ac
@@ -14,7 +14,7 @@ WHERE ac.id = acr_max.chat_id;
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('application', '0019_application_file_upload_enable_and_more'),
+        ("application", "0019_application_file_upload_enable_and_more"),
     ]
 
     operations = [

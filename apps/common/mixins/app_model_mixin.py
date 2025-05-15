@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： app_model_mixin.py
-    @date：2023/9/21 9:41
-    @desc:
+@project: maxkb
+@Author：虎
+@file： app_model_mixin.py
+@date：2023/9/21 9:41
+@desc:
 """
+
 from django.db import models
 
 
@@ -15,4 +16,4 @@ class AppModelMixin(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['create_time']
+        ordering = ["create_time"]

@@ -1,16 +1,17 @@
 # coding=utf-8
 """
-    @project: qabot
-    @Author：虎
-    @file： lock.py
-    @date：2023/9/11 11:45
-    @desc:
+@project: qabot
+@Author：虎
+@file： lock.py
+@date：2023/9/11 11:45
+@desc:
 """
+
 from datetime import timedelta
 
 from django.core.cache import caches
 
-memory_cache = caches['default']
+memory_cache = caches["default"]
 
 
 def try_lock(key: str, timeout=None):
@@ -20,7 +21,11 @@ def try_lock(key: str, timeout=None):
     :param timeout 超时时间
     :return: 是否获取到锁
     """
-    return memory_cache.add(key, 'lock', timeout=timedelta(hours=1).total_seconds() if timeout is not None else timeout)
+    return memory_cache.add(
+        key,
+        "lock",
+        timeout=timedelta(hours=1).total_seconds() if timeout is not None else timeout,
+    )
 
 
 def un_lock(key: str):

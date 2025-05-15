@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： field_message.py
-    @date：2024/3/1 14:30
-    @desc:
+@project: maxkb
+@Author：虎
+@file： field_message.py
+@date：2024/3/1 14:30
+@desc:
 """
+
 from django.utils.functional import lazy
 from rest_framework import serializers
 
@@ -19,7 +20,10 @@ def reset_messages(field, messages):
 
 
 def reset_message_by_field(field_text, field):
-    return reset_messages(field_text, {**field.default_error_messages, **field.__bases__[0].default_error_messages})
+    return reset_messages(
+        field_text,
+        {**field.default_error_messages, **field.__bases__[0].default_error_messages},
+    )
 
 
 class ErrMessage:

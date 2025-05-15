@@ -1,10 +1,10 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
-    @file： embedding.py
-    @date：2024/10/17 15:29
-    @desc:
+@project: MaxKB
+@Author：虎
+@file： embedding.py
+@date：2024/10/17 15:29
+@desc:
 """
 
 import base64
@@ -20,16 +20,18 @@ from setting.models_provider.base_model_provider import MaxKBBaseModel
 
 class XFEmbedding(MaxKBBaseModel, SparkLLMTextEmbeddings):
     @staticmethod
-    def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
+    def new_instance(
+        model_type, model_name, model_credential: Dict[str, object], **model_kwargs
+    ):
         return XFEmbedding(
-            spark_app_id=model_credential.get('spark_app_id'),
-            spark_api_key=model_credential.get('spark_api_key'),
-            spark_api_secret=model_credential.get('spark_api_secret')
+            spark_app_id=model_credential.get("spark_app_id"),
+            spark_api_key=model_credential.get("spark_api_key"),
+            spark_api_secret=model_credential.get("spark_api_secret"),
         )
 
     @staticmethod
     def _parser_message(
-            message: str,
+        message: str,
     ) -> Optional[ndarray]:
         data = json.loads(message)
         code = data["header"]["code"]

@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
-    @file： embedding.py
-    @date：2024/10/16 16:34
-    @desc:
+@project: MaxKB
+@Author：虎
+@file： embedding.py
+@date：2024/10/16 16:34
+@desc:
 """
+
 from functools import reduce
 from typing import Dict, List
 
@@ -16,21 +17,25 @@ from setting.models_provider.base_model_provider import MaxKBBaseModel
 
 
 def proxy_embed_documents(texts: List[str], step_size, embed_documents):
-    value = [embed_documents(texts[start_index:start_index + step_size]) for start_index in
-             range(0, len(texts), step_size)]
+    value = [
+        embed_documents(texts[start_index : start_index + step_size])
+        for start_index in range(0, len(texts), step_size)
+    ]
     return reduce(lambda x, y: [*x, *y], value, [])
 
 
 class AliyunBaiLianEmbedding(MaxKBBaseModel, DashScopeEmbeddings):
     @staticmethod
-    def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
+    def new_instance(
+        model_type, model_name, model_credential: Dict[str, object], **model_kwargs
+    ):
         return AliyunBaiLianEmbedding(
             model=model_name,
-            dashscope_api_key=model_credential.get('dashscope_api_key')
+            dashscope_api_key=model_credential.get("dashscope_api_key"),
         )
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
-        if self.model == 'text-embedding-v3':
+        if self.model == "text-embedding-v3":
             return proxy_embed_documents(texts, 6, self._embed_documents)
         return self._embed_documents(texts)
 

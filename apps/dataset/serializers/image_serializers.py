@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： image_serializers.py
-    @date：2024/4/22 16:36
-    @desc:
+@project: maxkb
+@Author：虎
+@file： image_serializers.py
+@date：2024/4/22 16:36
+@desc:
 """
+
 import uuid
 
 from django.db.models import QuerySet
@@ -20,15 +21,21 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ImageSerializer(serializers.Serializer):
-    image = UploadedImageField(required=True, error_messages=ErrMessage.image(_('image')))
+    image = UploadedImageField(
+        required=True, error_messages=ErrMessage.image(_("image"))
+    )
 
     def upload(self, with_valid=True):
         if with_valid:
             self.is_valid(raise_exception=True)
         image_id = uuid.uuid1()
-        image = Image(id=image_id, image=self.data.get('image').read(), image_name=self.data.get('image').name)
+        image = Image(
+            id=image_id,
+            image=self.data.get("image").read(),
+            image_name=self.data.get("image").name,
+        )
         image.save()
-        return f'/api/image/{image_id}'
+        return f"/api/image/{image_id}"
 
     class Operate(serializers.Serializer):
         id = serializers.UUIDField(required=True)
@@ -36,13 +43,19 @@ class ImageSerializer(serializers.Serializer):
         def get(self, with_valid=True):
             if with_valid:
                 self.is_valid(raise_exception=True)
-            image_id = self.data.get('id')
+            image_id = self.data.get("id")
             image = QuerySet(Image).filter(id=image_id).first()
             if image is None:
-                raise NotFound404(404, _('Image not found'))
-            if image.image_name.endswith('.svg'):
-                return HttpResponse(image.image, status=200, headers={'Content-Type': 'image/svg+xml'})
+                raise NotFound404(404, _("Image not found"))
+            if image.image_name.endswith(".svg"):
+                return HttpResponse(
+                    image.image, status=200, headers={"Content-Type": "image/svg+xml"}
+                )
             # gif
-            elif image.image_name.endswith('.gif'):
-                return HttpResponse(image.image, status=200, headers={'Content-Type': 'image/gif'})
-            return HttpResponse(image.image, status=200, headers={'Content-Type': 'image/png'})
+            elif image.image_name.endswith(".gif"):
+                return HttpResponse(
+                    image.image, status=200, headers={"Content-Type": "image/gif"}
+                )
+            return HttpResponse(
+                image.image, status=200, headers={"Content-Type": "image/png"}
+            )

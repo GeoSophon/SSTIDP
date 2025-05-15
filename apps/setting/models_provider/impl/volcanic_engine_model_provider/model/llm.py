@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import Dict
 
 from setting.models_provider.base_model_provider import MaxKBBaseModel
 
@@ -11,11 +11,13 @@ class VolcanicEngineChatModel(MaxKBBaseModel, BaseChatOpenAI):
         return False
 
     @staticmethod
-    def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
+    def new_instance(
+        model_type, model_name, model_credential: Dict[str, object], **model_kwargs
+    ):
         optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
         return VolcanicEngineChatModel(
             model=model_name,
-            openai_api_base=model_credential.get('api_base'),
-            openai_api_key=model_credential.get('api_key'),
-            **optional_params
+            openai_api_base=model_credential.get("api_base"),
+            openai_api_key=model_credential.get("api_key"),
+            **optional_params,
         )

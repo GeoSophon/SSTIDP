@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0022_application_tts_autoplay'),
+        ("application", "0022_application_tts_autoplay"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='application',
-            name='stt_autosend',
-            field=models.BooleanField(default=False, verbose_name='自动发送'),
+            model_name="application",
+            name="stt_autosend",
+            field=models.BooleanField(default=False, verbose_name="自动发送"),
         ),
     ]

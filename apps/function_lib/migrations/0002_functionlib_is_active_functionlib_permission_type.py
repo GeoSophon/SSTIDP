@@ -4,20 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('function_lib', '0001_initial'),
+        ("function_lib", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='functionlib',
-            name='is_active',
+            model_name="functionlib",
+            name="is_active",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='functionlib',
-            name='permission_type',
-            field=models.CharField(choices=[('PUBLIC', '公开'), ('PRIVATE', '私有')], default='PRIVATE', max_length=20, verbose_name='权限类型'),
+            model_name="functionlib",
+            name="permission_type",
+            field=models.CharField(
+                choices=[("PUBLIC", "公开"), ("PRIVATE", "私有")],
+                default="PRIVATE",
+                max_length=20,
+                verbose_name="权限类型",
+            ),
         ),
     ]

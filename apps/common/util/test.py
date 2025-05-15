@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： test.py
-    @date：2023/11/15 15:13
-    @desc:
+@project: maxkb
+@Author：虎
+@file： test.py
+@date：2023/11/15 15:13
+@desc:
 """
+
 import hashlib
 import time
 
@@ -13,9 +14,9 @@ from django.core import signing
 from django.core.cache import cache
 
 # alg使用的算法
-HEADER = {'type': 'JWP', 'alg': 'default'}
-TOKEN_KEY = 'solomon_world_token'
-TOKEN_SALT = 'solomonwanc@gmail.com'
+HEADER = {"type": "JWP", "alg": "default"}
+TOKEN_KEY = "solomon_world_token"
+TOKEN_SALT = "solomonwanc@gmail.com"
 TIME_OUT = 30 * 60
 
 
@@ -38,11 +39,7 @@ def create_token(username, password):
     # 1. 加密头信息
     header = encrypt(HEADER)
     # 2. 构造Payload
-    payload = {
-        "username": username,
-        "password": password,
-        "iat": time.time()
-    }
+    payload = {"username": username, "password": password, "iat": time.time()}
     payload = encrypt(payload)
     # 3. 生成签名
     md5 = hashlib.md5()
@@ -55,7 +52,7 @@ def create_token(username, password):
 
 
 def get_payload(token):
-    payload = str(token).split('.')[1]
+    payload = str(token).split(".")[1]
     payload = decrypt(payload)
     return payload
 
@@ -63,13 +60,13 @@ def get_payload(token):
 # 通过token获取用户名
 def get_username(token):
     payload = get_payload(token)
-    return payload['username']
+    return payload["username"]
     pass
 
 
 def check_token(token):
     username = get_username(token)
-    print('username', username)
+    print("username", username)
     last_token = cache.get(username)
     if last_token:
         return last_token == token

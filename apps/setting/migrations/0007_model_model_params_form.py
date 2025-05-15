@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('setting', '0006_alter_model_status'),
+        ("setting", "0006_alter_model_status"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='model',
-            name='model_params_form',
-            field=models.JSONField(default=list, verbose_name='模型参数配置'),
+            model_name="model",
+            name="model_params_form",
+            field=models.JSONField(default=list, verbose_name="模型参数配置"),
         ),
     ]

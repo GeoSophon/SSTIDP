@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 
-function_template = '''
+function_template = """
 INSERT INTO function_lib (create_time, update_time, id, name, "desc", code, input_field_list, user_id, is_active, permission_type, function_type, icon, init_field_list, init_params, template_id) VALUES ('2025-03-10 06:20:35.945414 +00:00', '2025-03-10 09:19:23.608026 +00:00', 'c75cb48e-fd77-11ef-84d2-5618c4394482', '博查搜索', '从博查搜索任何信息和网页URL', e'def bocha_search(query, apikey):
     import requests
     import json
@@ -154,41 +154,48 @@ def queryPgSQL(database, user, password, host, port, query):
         if conn:
             conn.close()', '{"{\\"name\\": \\"query\\", \\"type\\": \\"string\\", \\"source\\": \\"reference\\", \\"is_required\\": true}"}', 'f0dd8f71-e4ee-11ee-8c84-a8a1595801ab', true, 'PUBLIC', 'INTERNAL', '/ui/fx/postgresql/icon.png', '[{"attrs":{"maxlength":200,"minlength":1,"show-word-limit":true},"field":"host","label":"host","required":true,"input_type":"TextInput","props_info":{"rules":[{"message":"host 为必填属性","required":true},{"max":200,"min":1,"message":"host长度在 1 到 200 个字符","trigger":"blur"}]},"default_value":"x","show_default_value":false},{"attrs":{"maxlength":20,"minlength":1,"show-word-limit":true},"field":"port","label":"port","required":true,"input_type":"TextInput","props_info":{"rules":[{"message":"port 为必填属性","required":true},{"max":20,"min":1,"message":"port长度在 1 到 20 个字符","trigger":"blur"}]},"default_value":"5432","show_default_value":false},{"attrs":{"maxlength":200,"minlength":1,"show-word-limit":true},"field":"user","label":"user","required":true,"input_type":"TextInput","props_info":{"rules":[{"message":"user 为必填属性","required":true},{"max":200,"min":1,"message":"user长度在 1 到 200 个字符","trigger":"blur"}]},"default_value":"root","show_default_value":false},{"attrs":{"type":"password","maxlength":200,"minlength":1,"show-password":true,"show-word-limit":true},"field":"password","label":"password","required":true,"input_type":"PasswordInput","props_info":{"rules":[{"message":"password 为必填属性","required":true},{"max":200,"min":1,"message":"password长度在 1 到 200 个字符","trigger":"blur"}]},"default_value":"x","show_default_value":false},{"attrs":{"maxlength":200,"minlength":1,"show-word-limit":true},"field":"database","label":"database","required":true,"input_type":"TextInput","props_info":{"rules":[{"message":"database 为必填属性","required":true},{"max":200,"min":1,"message":"database长度在 1 到 200 个字符","trigger":"blur"}]},"default_value":"x","show_default_value":false}]', null, null);
 
-'''
+"""
 
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('function_lib', '0002_functionlib_is_active_functionlib_permission_type'),
+        ("function_lib", "0002_functionlib_is_active_functionlib_permission_type"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='functionlib',
-            name='function_type',
-            field=models.CharField(choices=[('INTERNAL', '内置'), ('PUBLIC', '公开')],
-                                   default='PUBLIC', max_length=20, verbose_name='函数类型'),
+            model_name="functionlib",
+            name="function_type",
+            field=models.CharField(
+                choices=[("INTERNAL", "内置"), ("PUBLIC", "公开")],
+                default="PUBLIC",
+                max_length=20,
+                verbose_name="函数类型",
+            ),
         ),
         migrations.AddField(
-            model_name='functionlib',
-            name='icon',
-            field=models.CharField(default='/ui/favicon.ico', max_length=256,
-                                   verbose_name='函数库icon'),
+            model_name="functionlib",
+            name="icon",
+            field=models.CharField(
+                default="/ui/favicon.ico", max_length=256, verbose_name="函数库icon"
+            ),
         ),
         migrations.AddField(
-            model_name='functionlib',
-            name='init_field_list',
-            field=models.JSONField(default=list, verbose_name='启动字段列表'),
+            model_name="functionlib",
+            name="init_field_list",
+            field=models.JSONField(default=list, verbose_name="启动字段列表"),
         ),
         migrations.AddField(
-            model_name='functionlib',
-            name='init_params',
-            field=models.CharField(max_length=102400, null=True, verbose_name='初始化参数'),
+            model_name="functionlib",
+            name="init_params",
+            field=models.CharField(
+                max_length=102400, null=True, verbose_name="初始化参数"
+            ),
         ),
         migrations.AddField(
-            model_name='functionlib',
-            name='template_id',
-            field=models.UUIDField(default=None, null=True, verbose_name='模版id'),
+            model_name="functionlib",
+            name="template_id",
+            field=models.UUIDField(default=None, null=True, verbose_name="模版id"),
         ),
-        migrations.RunSQL(function_template)
+        migrations.RunSQL(function_template),
     ]

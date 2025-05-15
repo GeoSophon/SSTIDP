@@ -22,19 +22,21 @@ class ZhiPuTextToImage(MaxKBBaseModel, BaseTextToImage):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.api_key = kwargs.get('api_key')
-        self.model = kwargs.get('model')
-        self.params = kwargs.get('params')
+        self.api_key = kwargs.get("api_key")
+        self.model = kwargs.get("model")
+        self.params = kwargs.get("params")
 
     @staticmethod
-    def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
-        optional_params = {'params': {'size': '1024x1024'}}
+    def new_instance(
+        model_type, model_name, model_credential: Dict[str, object], **model_kwargs
+    ):
+        optional_params = {"params": {"size": "1024x1024"}}
         for key, value in model_kwargs.items():
-            if key not in ['model_id', 'use_local', 'streaming']:
-                optional_params['params'][key] = value
+            if key not in ["model_id", "use_local", "streaming"]:
+                optional_params["params"][key] = value
         return ZhiPuTextToImage(
             model=model_name,
-            api_key=model_credential.get('api_key'),
+            api_key=model_credential.get("api_key"),
             **optional_params,
         )
 
@@ -46,7 +48,7 @@ class ZhiPuTextToImage(MaxKBBaseModel, BaseTextToImage):
             zhipuai_api_key=self.api_key,
             model_name=self.model,
         )
-        chat.invoke([HumanMessage([{"type": "text", "text": gettext('Hello')}])])
+        chat.invoke([HumanMessage([{"type": "text", "text": gettext("Hello")}])])
 
         # self.generate_image('生成一个小猫图片')
 
@@ -59,7 +61,7 @@ class ZhiPuTextToImage(MaxKBBaseModel, BaseTextToImage):
         response = chat.images.generations(
             model=self.model,  # 填写需要调用的模型编码
             prompt=prompt,  # 填写需要生成图片的文本
-            **self.params  # 填写额外参数
+            **self.params,  # 填写额外参数
         )
         file_urls = []
         for content in response.data:

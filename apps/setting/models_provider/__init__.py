@@ -1,19 +1,24 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： __init__.py.py
-    @date：2023/10/31 17:16
-    @desc:
+@project: maxkb
+@Author：虎
+@file： __init__.py.py
+@date：2023/10/31 17:16
+@desc:
 """
+
 import json
 from typing import Dict
 
 from common.util.rsa_util import rsa_long_decrypt
-from setting.models_provider.constants.model_provider_constants import ModelProvideConstants
+from setting.models_provider.constants.model_provider_constants import (
+    ModelProvideConstants,
+)
 
 
-def get_model_(provider, model_type, model_name, credential, model_id, use_local=False, **kwargs):
+def get_model_(
+    provider, model_type, model_name, credential, model_id, use_local=False, **kwargs
+):
     """
     获取模型实例
     @param provider:   供应商
@@ -24,12 +29,15 @@ def get_model_(provider, model_type, model_name, credential, model_id, use_local
     @param use_local:  是否调用本地模型 只适用于本地供应商
     @return: 模型实例
     """
-    model = get_provider(provider).get_model(model_type, model_name,
-                                             json.loads(
-                                                 rsa_long_decrypt(credential)),
-                                             model_id=model_id,
-                                             use_local=use_local,
-                                             streaming=True, **kwargs)
+    model = get_provider(provider).get_model(
+        model_type,
+        model_name,
+        json.loads(rsa_long_decrypt(credential)),
+        model_id=model_id,
+        use_local=use_local,
+        streaming=True,
+        **kwargs,
+    )
     return model
 
 
@@ -39,7 +47,14 @@ def get_model(model, **kwargs):
     @param model: model 数据库Model实例对象
     @return: 模型实例
     """
-    return get_model_(model.provider, model.model_type, model.model_name, model.credential, str(model.id), **kwargs)
+    return get_model_(
+        model.provider,
+        model.model_type,
+        model.model_name,
+        model.credential,
+        str(model.id),
+        **kwargs,
+    )
 
 
 def get_provider(provider):
@@ -81,7 +96,14 @@ def get_model_type_list(provider):
     return get_provider(provider).get_model_type_list()
 
 
-def is_valid_credential(provider, model_type, model_name, model_credential: Dict[str, object], model_params, raise_exception=False):
+def is_valid_credential(
+    provider,
+    model_type,
+    model_name,
+    model_credential: Dict[str, object],
+    model_params,
+    raise_exception=False,
+):
     """
     校验模型认证参数
     @param provider:         供应商字符串
@@ -91,4 +113,6 @@ def is_valid_credential(provider, model_type, model_name, model_credential: Dict
     @param raise_exception:  是否抛出错误
     @return: True|False
     """
-    return get_provider(provider).is_valid_credential(model_type, model_name, model_credential, model_params, raise_exception)
+    return get_provider(provider).is_valid_credential(
+        model_type, model_name, model_credential, model_params, raise_exception
+    )

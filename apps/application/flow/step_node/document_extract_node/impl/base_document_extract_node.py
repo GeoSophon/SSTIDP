@@ -6,9 +6,15 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import QuerySet
 
 from application.flow.i_step_node import NodeResult
-from application.flow.step_node.document_extract_node.i_document_extract_node import IDocumentExtractNode
+from application.flow.step_node.document_extract_node.i_document_extract_node import (
+    IDocumentExtractNode,
+)
 from dataset.models import File
-from dataset.serializers.document_serializers import split_handles, parse_table_handle_list, FileBufferHandle
+from dataset.serializers.document_serializers import (
+    split_handles,
+    parse_table_handle_list,
+    FileBufferHandle,
+)
 from dataset.serializers.file_serializers import FileSerializer
 
 
@@ -35,20 +41,20 @@ def bytes_to_uploaded_file(file_bytes, file_name="file.txt"):
     return uploaded_file
 
 
-splitter = '\n`-----------------------------------`\n'
+splitter = "\n`-----------------------------------`\n"
+
 
 class BaseDocumentExtractNode(IDocumentExtractNode):
     def save_context(self, details, workflow_manage):
-        self.context['content'] = details.get('content')
-
+        self.context["content"] = details.get("content")
 
     def execute(self, document, chat_id, **kwargs):
         get_buffer = FileBufferHandle().get_buffer
 
-        self.context['document_list'] = document
+        self.context["document_list"] = document
         content = []
         if document is None or not isinstance(document, list):
-            return NodeResult({'content': ''}, {})
+            return NodeResult({"content": ""}, {})
 
         application = self.workflow_manage.work_flow_post_handler.chat_info.application
 
@@ -56,39 +62,39 @@ class BaseDocumentExtractNode(IDocumentExtractNode):
         def save_image(image_list):
             for image in image_list:
                 meta = {
-                    'debug': False if application.id else True,
-                    'chat_id': chat_id,
-                    'application_id': str(application.id) if application.id else None,
-                    'file_id': str(image.id)
+                    "debug": False if application.id else True,
+                    "chat_id": chat_id,
+                    "application_id": str(application.id) if application.id else None,
+                    "file_id": str(image.id),
                 }
                 file = bytes_to_uploaded_file(image.image, image.image_name)
-                FileSerializer(data={'file': file, 'meta': meta}).upload()
+                FileSerializer(data={"file": file, "meta": meta}).upload()
 
         for doc in document:
-            file = QuerySet(File).filter(id=doc['file_id']).first()
+            file = QuerySet(File).filter(id=doc["file_id"]).first()
             buffer = io.BytesIO(file.get_byte().tobytes())
-            buffer.name = doc['name']  # this is the important line
+            buffer.name = doc["name"]  # this is the important line
 
-            for split_handle in (parse_table_handle_list + split_handles):
+            for split_handle in parse_table_handle_list + split_handles:
                 if split_handle.support(buffer, get_buffer):
                     # 回到文件头
                     buffer.seek(0)
                     file_content = split_handle.get_content(buffer, save_image)
-                    content.append('### ' + doc['name'] + '\n' + file_content)
+                    content.append("### " + doc["name"] + "\n" + file_content)
                     break
 
-        return NodeResult({'content': splitter.join(content)}, {})
+        return NodeResult({"content": splitter.join(content)}, {})
 
     def get_details(self, index: int, **kwargs):
-        content = self.context.get('content', '').split(splitter)
+        content = self.context.get("content", "").split(splitter)
         # 不保存content全部内容，因为content内容可能会很大
         return {
-            'name': self.node.properties.get('stepName'),
+            "name": self.node.properties.get("stepName"),
             "index": index,
-            'run_time': self.context.get('run_time'),
-            'type': self.node.type,
-            'content': [file_content[:500] for file_content in content],
-            'status': self.status,
-            'err_message': self.err_message,
-            'document_list': self.context.get('document_list')
+            "run_time": self.context.get("run_time"),
+            "type": self.node.type,
+            "content": [file_content[:500] for file_content in content],
+            "status": self.status,
+            "err_message": self.err_message,
+            "document_list": self.context.get("document_list"),
         }

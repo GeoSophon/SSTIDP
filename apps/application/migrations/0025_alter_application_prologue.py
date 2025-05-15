@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0024_applicationaccesstoken_language'),
+        ("application", "0024_applicationaccesstoken_language"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='application',
-            name='prologue',
-            field=models.CharField(default='', max_length=40960, verbose_name='开场白'),
+            model_name="application",
+            name="prologue",
+            field=models.CharField(default="", max_length=40960, verbose_name="开场白"),
         ),
     ]

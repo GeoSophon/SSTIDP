@@ -1,5 +1,4 @@
 import abc
-import time
 import shutil
 import psutil
 import datetime
@@ -9,9 +8,8 @@ from ..hands import *
 
 
 class BaseService(object):
-
     def __init__(self, **kwargs):
-        self.name = kwargs['name']
+        self.name = kwargs["name"]
         self._process = None
         self.STOP_TIMEOUT = 10
         self.max_retry = 0
@@ -27,7 +25,7 @@ class BaseService(object):
     @property
     @abc.abstractmethod
     def cwd(self):
-        return ''
+        return ""
 
     @property
     def is_running(self):
@@ -42,20 +40,22 @@ class BaseService(object):
 
     def show_status(self):
         if self.is_running:
-            msg = f'{self.name} is running: {self.pid}.'
+            msg = f"{self.name} is running: {self.pid}."
         else:
-            msg = f'{self.name} is stopped.'
+            msg = f"{self.name} is stopped."
             if DEBUG:
-                msg = '\033[31m{} is stopped.\033[0m\nYou can manual start it to find the error: \n' \
-                      '  $ cd {}\n' \
-                      '  $ {}'.format(self.name, self.cwd, ' '.join(self.cmd))
+                msg = (
+                    "\033[31m{} is stopped.\033[0m\nYou can manual start it to find the error: \n"
+                    "  $ cd {}\n"
+                    "  $ {}".format(self.name, self.cwd, " ".join(self.cmd))
+                )
 
         print(msg)
 
     # -- log --
     @property
     def log_filename(self):
-        return f'{self.name}.log'
+        return f"{self.name}.log"
 
     @property
     def log_filepath(self):
@@ -63,17 +63,18 @@ class BaseService(object):
 
     @property
     def log_file(self):
-        return open(self.log_filepath, 'a')
+        return open(self.log_filepath, "a")
 
     @property
     def log_dir(self):
         return os.path.dirname(self.log_filepath)
+
     # -- end log --
 
     # -- pid --
     @property
     def pid_filepath(self):
-        return os.path.join(TMP_DIR, f'{self.name}.pid')
+        return os.path.join(TMP_DIR, f"{self.name}.pid")
 
     @property
     def pid(self):
@@ -87,12 +88,13 @@ class BaseService(object):
         return pid
 
     def write_pid(self):
-        with open(self.pid_filepath, 'w') as f:
+        with open(self.pid_filepath, "w") as f:
             f.write(str(self.process.pid))
 
     def remove_pid(self):
         if os.path.isfile(self.pid_filepath):
             os.unlink(self.pid_filepath)
+
     # -- end pid --
 
     # -- process --
@@ -109,7 +111,7 @@ class BaseService(object):
 
     # -- action --
     def open_subprocess(self):
-        kwargs = {'cwd': self.cwd, 'stderr': self.log_file, 'stdout': self.log_file}
+        kwargs = {"cwd": self.cwd, "stderr": self.log_file, "stdout": self.log_file}
         self._process = subprocess.Popen(self.cmd, **kwargs)
 
     def start(self):
@@ -130,7 +132,7 @@ class BaseService(object):
             # self.remove_pid()
             return
 
-        print(f'Stop service: {self.name}', end='')
+        print(f"Stop service: {self.name}", end="")
         sig = 9 if force else 15
         os.kill(self.pid, sig)
 
@@ -159,8 +161,8 @@ class BaseService(object):
         self._rotate_log()
 
     def _check(self):
-        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print(f"{now} Check service status: {self.name} -> ", end='')
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"{now} Check service status: {self.name} -> ", end="")
         if self.process:
             try:
                 self.process.wait(1)  # 不wait，子进程可能无法回收
@@ -168,9 +170,9 @@ class BaseService(object):
                 pass
 
         if self.is_running:
-            print(f'running at {self.pid}')
+            print(f"running at {self.pid}")
         else:
-            print(f'stopped at {self.pid}')
+            print(f"stopped at {self.pid}")
 
     def _restart(self):
         if self.retry > self.max_retry:
@@ -178,30 +180,31 @@ class BaseService(object):
             self.EXIT_EVENT.set()
             return
         self.retry += 1
-        logging.info(f'> Find {self.name} stopped, retry {self.retry}, {self.pid}')
+        logging.info(f"> Find {self.name} stopped, retry {self.retry}, {self.pid}")
         self.start()
 
     def _rotate_log(self):
         now = datetime.datetime.now()
-        _time = now.strftime('%H:%M')
-        if _time != '23:59':
+        _time = now.strftime("%H:%M")
+        if _time != "23:59":
             return
 
-        backup_date = now.strftime('%Y-%m-%d')
+        backup_date = now.strftime("%Y-%m-%d")
         backup_log_dir = os.path.join(self.log_dir, backup_date)
         if not os.path.exists(backup_log_dir):
             os.mkdir(backup_log_dir)
 
         backup_log_path = os.path.join(backup_log_dir, self.log_filename)
         if os.path.isfile(self.log_filepath) and not os.path.isfile(backup_log_path):
-            logging.info(f'Rotate log file: {self.log_filepath} => {backup_log_path}')
+            logging.info(f"Rotate log file: {self.log_filepath} => {backup_log_path}")
             shutil.copy(self.log_filepath, backup_log_path)
-            with open(self.log_filepath, 'w') as f:
+            with open(self.log_filepath, "w"):
                 pass
 
         to_delete_date = now - datetime.timedelta(days=self.LOG_KEEP_DAYS)
-        to_delete_dir = os.path.join(LOG_DIR, to_delete_date.strftime('%Y-%m-%d'))
+        to_delete_dir = os.path.join(LOG_DIR, to_delete_date.strftime("%Y-%m-%d"))
         if os.path.exists(to_delete_dir):
-            logging.info(f'Remove old log: {to_delete_dir}')
+            logging.info(f"Remove old log: {to_delete_dir}")
             shutil.rmtree(to_delete_dir, ignore_errors=True)
+
     # -- end action --

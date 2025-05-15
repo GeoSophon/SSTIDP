@@ -7,13 +7,17 @@ import common.encoder.encoder
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('application', '0009_application_type_application_work_flow_and_more'),
+        ("application", "0009_application_type_application_work_flow_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='chatrecord',
-            name='details',
-            field=models.JSONField(default=dict, encoder=common.encoder.encoder.SystemEncoder, verbose_name='对话详情'),
+            model_name="chatrecord",
+            name="details",
+            field=models.JSONField(
+                default=dict,
+                encoder=common.encoder.encoder.SystemEncoder,
+                verbose_name="对话详情",
+            ),
         ),
     ]

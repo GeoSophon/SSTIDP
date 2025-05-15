@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： __init__.py.py
-    @date：2024/6/7 14:43
-    @desc:
+@project: maxkb
+@Author：虎
+@file： __init__.py.py
+@date：2024/6/7 14:43
+@desc:
 """
+
 from .ai_chat_step_node import *
 from .application_node import BaseApplicationNode
 from .condition_node import *
@@ -27,12 +28,26 @@ from .text_to_speech_step_node.impl.base_text_to_speech_node import BaseTextToSp
 from .variable_assign_node import BaseVariableAssignNode
 from .mcp_node import BaseMcpNode
 
-node_list = [BaseStartStepNode, BaseChatNode, BaseSearchDatasetNode, BaseQuestionNode,
-             BaseConditionNode, BaseReplyNode,
-             BaseFunctionNodeNode, BaseFunctionLibNodeNode, BaseRerankerNode, BaseApplicationNode,
-             BaseDocumentExtractNode,
-             BaseImageUnderstandNode, BaseFormNode, BaseSpeechToTextNode, BaseTextToSpeechNode,
-             BaseImageGenerateNode, BaseVariableAssignNode, BaseMcpNode]
+node_list = [
+    BaseStartStepNode,
+    BaseChatNode,
+    BaseSearchDatasetNode,
+    BaseQuestionNode,
+    BaseConditionNode,
+    BaseReplyNode,
+    BaseFunctionNodeNode,
+    BaseFunctionLibNodeNode,
+    BaseRerankerNode,
+    BaseApplicationNode,
+    BaseDocumentExtractNode,
+    BaseImageUnderstandNode,
+    BaseFormNode,
+    BaseSpeechToTextNode,
+    BaseTextToSpeechNode,
+    BaseImageGenerateNode,
+    BaseVariableAssignNode,
+    BaseMcpNode,
+]
 
 
 def get_node(node_type):

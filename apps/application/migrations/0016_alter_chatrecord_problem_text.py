@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0015_re_database_index'),
+        ("application", "0015_re_database_index"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='chatrecord',
-            name='problem_text',
-            field=models.CharField(max_length=10240, verbose_name='问题'),
+            model_name="chatrecord",
+            name="problem_text",
+            field=models.CharField(max_length=10240, verbose_name="问题"),
         ),
     ]
