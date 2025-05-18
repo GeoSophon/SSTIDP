@@ -21,6 +21,14 @@ backend_path = os.path.join(celery_data_dir, "celery_results.sqlite3")
 # 使用sql_lite 当做broker 和 响应接收
 CELERY_BROKER_URL = f"sqla+sqlite:///{broker_path}"
 CELERY_result_backend = f"db+sqlite:///{backend_path}"
+# 使用redis 当做broker 和 响应接收
+# host = CONFIG.get('REDIS_DB_HOST')
+# port = CONFIG.get('REDIS_DB_PORT')
+# db = CONFIG.get('REDIS_DB_DB')
+# user = CONFIG.get('REDIS_DB_USER')
+# password = CONFIG.get('REDIS_DB_PASSWORD')
+# CELERY_BROKER_URL = f'redis://{user}:{password}@{host}:{port}/{db}'
+# CELERY_result_backend = f'redis://{user}:{password}@{host}:{port}/{db}'
 CELERY_timezone = CONFIG.TIME_ZONE
 CELERY_ENABLE_UTC = False
 CELERY_task_serializer = "pickle"
@@ -45,5 +53,13 @@ CELERY_ONCE = {
     "backend": "celery_once.backends.File",
     "settings": {"location": celery_once_path},
 }
+# 使用redis 当做broker 和 响应接收
+# CELERY_ONCE = {
+#     'backend': 'celery_once.backends.Redis',
+#     'settings': {
+#         'url': f'redis://{user}:{password}@{host}:{port}/{db}',
+#         'default_timeout': 3600  # 锁自动过期时间
+#     }
+# }
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_LOG_DIR = os.path.join(PROJECT_DIR, "logs", "celery")
