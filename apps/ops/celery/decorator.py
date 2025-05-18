@@ -32,9 +32,8 @@ def get_after_app_ready_tasks():
 
 
 def register_as_period_task(
-        crontab=None, interval=None, name=None,
-        args=(), kwargs=None,
-        description=''):
+    crontab=None, interval=None, name=None, args=(), kwargs=None, description=""
+):
     """
     Warning: Task must have not any args and kwargs
     :param crontab:  "* * * * *"
@@ -54,18 +53,20 @@ def register_as_period_task(
 
         # Because when this decorator run, the task was not created,
         # So we can't use func.name
-        task = '{func.__module__}.{func.__name__}'.format(func=func)
+        task = "{func.__module__}.{func.__name__}".format(func=func)
         _name = name if name else task
-        add_register_period_task({
-            _name: {
-                'task': task,
-                'interval': interval,
-                'crontab': crontab,
-                'args': args,
-                'kwargs': kwargs if kwargs else {},
-                'description': description
+        add_register_period_task(
+            {
+                _name: {
+                    "task": task,
+                    "interval": interval,
+                    "crontab": crontab,
+                    "args": args,
+                    "kwargs": kwargs if kwargs else {},
+                    "description": description,
+                }
             }
-        })
+        )
 
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -79,7 +80,7 @@ def register_as_period_task(
 def after_app_ready_start(func):
     # Because when this decorator run, the task was not created,
     # So we can't use func.name
-    name = '{func.__module__}.{func.__name__}'.format(func=func)
+    name = "{func.__module__}.{func.__name__}".format(func=func)
     if name not in _after_app_ready_start_tasks:
         add_after_app_ready_task(name)
 
@@ -93,7 +94,7 @@ def after_app_ready_start(func):
 def after_app_shutdown_clean_periodic(func):
     # Because when this decorator run, the task was not created,
     # So we can't use func.name
-    name = '{func.__module__}.{func.__name__}'.format(func=func)
+    name = "{func.__module__}.{func.__name__}".format(func=func)
     if name not in _after_app_shutdown_clean_periodic_tasks:
         add_after_app_shutdown_clean_task(name)
 

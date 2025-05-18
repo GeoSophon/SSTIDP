@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0006_applicationapikey_allow_cross_domain_and_more'),
+        ("application", "0006_applicationapikey_allow_cross_domain_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='application',
-            name='prologue',
-            field=models.CharField(default='', max_length=4096, verbose_name='开场白'),
+            model_name="application",
+            name="prologue",
+            field=models.CharField(default="", max_length=4096, verbose_name="开场白"),
         ),
     ]

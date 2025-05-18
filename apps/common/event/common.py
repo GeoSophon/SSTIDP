@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： common.py
-    @date：2023/11/10 10:41
-    @desc:
+@project: maxkb
+@Author：虎
+@file： common.py
+@date：2023/11/10 10:41
+@desc:
 """
+
 from concurrent.futures import ThreadPoolExecutor
 
 from django.core.cache.backends.locmem import LocMemCache
@@ -14,7 +15,7 @@ work_thread_pool = ThreadPoolExecutor(5)
 
 embedding_thread_pool = ThreadPoolExecutor(3)
 
-memory_cache = LocMemCache('task', {"OPTIONS": {"MAX_ENTRIES": 1000}})
+memory_cache = LocMemCache("task", {"OPTIONS": {"MAX_ENTRIES": 1000}})
 
 
 def poxy(poxy_function):

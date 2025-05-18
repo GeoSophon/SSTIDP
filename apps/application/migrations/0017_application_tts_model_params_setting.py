@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0016_alter_chatrecord_problem_text'),
+        ("application", "0016_alter_chatrecord_problem_text"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='application',
-            name='tts_model_params_setting',
-            field=models.JSONField(default=dict, verbose_name='模型参数相关设置'),
+            model_name="application",
+            name="tts_model_params_setting",
+            field=models.JSONField(default=dict, verbose_name="模型参数相关设置"),
         ),
     ]

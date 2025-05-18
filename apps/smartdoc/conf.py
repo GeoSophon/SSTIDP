@@ -7,6 +7,7 @@
 2. 程序需要, 用户不需要更改的写到settings中
 3. 程序需要, 用户需要更改的写到本config中
 """
+
 import errno
 import logging
 import os
@@ -18,12 +19,12 @@ import yaml
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = os.path.dirname(BASE_DIR)
-logger = logging.getLogger('smartdoc.conf')
+logger = logging.getLogger("smartdoc.conf")
 
 
 def import_string(dotted_path):
     try:
-        module_path, class_name = dotted_path.rsplit('.', 1)
+        module_path, class_name = dotted_path.rsplit(".", 1)
     except ValueError as err:
         raise ImportError("%s doesn't look like a module path" % dotted_path) from err
 
@@ -33,16 +34,17 @@ def import_string(dotted_path):
         return getattr(module, class_name)
     except AttributeError as err:
         raise ImportError(
-            'Module "%s" does not define a "%s" attribute/class' %
-            (module_path, class_name)) from err
+            'Module "%s" does not define a "%s" attribute/class'
+            % (module_path, class_name)
+        ) from err
 
 
 def is_absolute_uri(uri):
-    """ 判断一个uri是否是绝对地址 """
+    """判断一个uri是否是绝对地址"""
     if not isinstance(uri, str):
         return False
 
-    result = re.match(r'^http[s]?://.*', uri)
+    result = re.match(r"^http[s]?://.*", uri)
     if result is None:
         return False
 
@@ -50,7 +52,7 @@ def is_absolute_uri(uri):
 
 
 def build_absolute_uri(base, uri):
-    """ 构建绝对uri地址 """
+    """构建绝对uri地址"""
     if uri is None:
         return base
 
@@ -65,7 +67,7 @@ def build_absolute_uri(base, uri):
 
     parsed_base = urlparse(base)
     url = "{}://{}".format(parsed_base.scheme, parsed_base.netloc)
-    path = '{}/{}/'.format(parsed_base.path.strip('/'), uri.strip('/'))
+    path = "{}/{}/".format(parsed_base.path.strip("/"), uri.strip("/"))
     return urljoin(url, path)
 
 
@@ -82,49 +84,48 @@ class Config(dict):
         "DB_PASSWORD": "Password123@postgres",
         "DB_ENGINE": "dj_db_conn_pool.backends.postgresql",
         "DB_MAX_OVERFLOW": 80,
-        'LANGUAGE_CODE': 'zh-CN',
+        "LANGUAGE_CODE": "zh-CN",
         # 向量模型
         "EMBEDDING_MODEL_NAME": "shibing624/text2vec-base-chinese",
         "EMBEDDING_DEVICE": "cpu",
-        "EMBEDDING_MODEL_PATH": os.path.join(PROJECT_DIR, 'models'),
+        "EMBEDDING_MODEL_PATH": os.path.join(PROJECT_DIR, "models"),
         # 向量库配置
-        "VECTOR_STORE_NAME": 'pg_vector',
+        "VECTOR_STORE_NAME": "pg_vector",
         "DEBUG": False,
-        'SANDBOX': False,
-        'LOCAL_MODEL_HOST': '127.0.0.1',
-        'LOCAL_MODEL_PORT': '11636',
-        'LOCAL_MODEL_PROTOCOL': "http"
-
+        "SANDBOX": False,
+        "LOCAL_MODEL_HOST": "127.0.0.1",
+        "LOCAL_MODEL_PORT": "11636",
+        "LOCAL_MODEL_PROTOCOL": "http",
     }
 
     def get_debug(self) -> bool:
-        return self.get('DEBUG') if 'DEBUG' in self else True
+        return self.get("DEBUG") if "DEBUG" in self else True
 
     def get_time_zone(self) -> str:
-        return self.get('TIME_ZONE') if 'TIME_ZONE' in self else 'Asia/Shanghai'
+        return self.get("TIME_ZONE") if "TIME_ZONE" in self else "Asia/Shanghai"
 
     def get_db_setting(self) -> dict:
         return {
-            "NAME": self.get('DB_NAME'),
-            "HOST": self.get('DB_HOST'),
-            "PORT": self.get('DB_PORT'),
-            "USER": self.get('DB_USER'),
-            "PASSWORD": self.get('DB_PASSWORD'),
-            "ENGINE": self.get('DB_ENGINE'),
+            "NAME": self.get("DB_NAME"),
+            "HOST": self.get("DB_HOST"),
+            "PORT": self.get("DB_PORT"),
+            "USER": self.get("DB_USER"),
+            "PASSWORD": self.get("DB_PASSWORD"),
+            "ENGINE": self.get("DB_ENGINE"),
             "POOL_OPTIONS": {
                 "POOL_SIZE": 20,
-                "MAX_OVERFLOW": int(self.get('DB_MAX_OVERFLOW'))
-            }
+                "MAX_OVERFLOW": int(self.get("DB_MAX_OVERFLOW")),
+            },
         }
 
     def get_language_code(self):
-        return self.get('LANGUAGE_CODE', 'zh-CN')
+        return self.get("LANGUAGE_CODE", "zh-CN")
 
     def __init__(self, *args):
         super().__init__(*args)
 
     def __repr__(self):
-        return '<%s %s>' % (self.__class__.__name__, dict.__repr__(self))
+        return "<%s %s>" % (self.__class__.__name__, dict.__repr__(self))
 
     def __getitem__(self, item):
         return self.get(item)
@@ -150,17 +151,17 @@ class ConfigManager:
         """
         mappings = []
         if len(mapping) == 1:
-            if hasattr(mapping[0], 'items'):
+            if hasattr(mapping[0], "items"):
                 mappings.append(mapping[0].items())
             else:
                 mappings.append(mapping[0])
         elif len(mapping) > 1:
             raise TypeError(
-                'expected at most 1 positional argument, got %d' % len(mapping)
+                "expected at most 1 positional argument, got %d" % len(mapping)
             )
         mappings.append(kwargs.items())
         for mapping in mappings:
-            for (key, value) in mapping:
+            for key, value in mapping:
                 if key.isupper():
                     self.config[key] = value
         return True
@@ -169,19 +170,19 @@ class ConfigManager:
         if self.root_path:
             filename = os.path.join(self.root_path, filename)
         try:
-            with open(filename, 'rt', encoding='utf8') as f:
+            with open(filename, "rt", encoding="utf8") as f:
                 obj = yaml.safe_load(f)
         except IOError as e:
             if silent and e.errno in (errno.ENOENT, errno.EISDIR):
                 return False
-            e.strerror = 'Unable to load configuration file (%s)' % e.strerror
+            e.strerror = "Unable to load configuration file (%s)" % e.strerror
             raise
         if obj:
             return self.from_mapping(obj)
         return True
 
     def load_from_yml(self):
-        for i in ['config_example.yml', 'config.yaml', 'config.yml']:
+        for i in ["config_example.yml", "config.yaml", "config.yml"]:
             if not os.path.isfile(os.path.join(self.root_path, i)):
                 continue
             loaded = self.from_yaml(i)
@@ -198,9 +199,13 @@ class ConfigManager:
 
     def load_from_env(self):
         keys = os.environ.keys()
-        config = {key.replace('MAXKB_', ''): os.environ.get(key) for key in keys if key.startswith('MAXKB_')}
+        config = {
+            key.replace("MAXKB_", ""): os.environ.get(key)
+            for key in keys
+            if key.startswith("MAXKB_")
+        }
         if len(config.keys()) <= 0:
-            msg = f"""
+            msg = """
 
                              Error: No config env found.
 
@@ -225,8 +230,8 @@ class ConfigManager:
         if not root_path:
             root_path = PROJECT_DIR
         manager = cls(root_path=root_path)
-        config_type = os.environ.get('MAXKB_CONFIG_TYPE')
-        if config_type is None or config_type != 'ENV':
+        config_type = os.environ.get("MAXKB_CONFIG_TYPE")
+        if config_type is None or config_type != "ENV":
             manager.load_from_yml()
         else:
             manager.load_from_env()

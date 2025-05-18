@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dataset', '0009_alter_document_status_alter_paragraph_status'),
+        ("dataset", "0009_alter_document_status_alter_paragraph_status"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='file',
-            name='meta',
-            field=models.JSONField(default=dict, verbose_name='文件关联数据'),
+            model_name="file",
+            name="meta",
+            field=models.JSONField(default=dict, verbose_name="文件关联数据"),
         ),
     ]

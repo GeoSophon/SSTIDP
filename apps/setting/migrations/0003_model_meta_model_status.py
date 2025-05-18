@@ -4,20 +4,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('setting', '0002_systemsetting'),
+        ("setting", "0002_systemsetting"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='model',
-            name='meta',
-            field=models.JSONField(default=dict, verbose_name='模型元数据,用于存储下载,或者错误信息'),
+            model_name="model",
+            name="meta",
+            field=models.JSONField(
+                default=dict, verbose_name="模型元数据,用于存储下载,或者错误信息"
+            ),
         ),
         migrations.AddField(
-            model_name='model',
-            name='status',
-            field=models.CharField(choices=[('SUCCESS', '成功'), ('ERROR', '失败'), ('DOWNLOAD', '下载中')], default='SUCCESS', max_length=20, verbose_name='设置类型'),
+            model_name="model",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("SUCCESS", "成功"),
+                    ("ERROR", "失败"),
+                    ("DOWNLOAD", "下载中"),
+                ],
+                default="SUCCESS",
+                max_length=20,
+                verbose_name="设置类型",
+            ),
         ),
     ]

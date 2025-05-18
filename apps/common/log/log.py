@@ -1,12 +1,12 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
-    @file： log.py
-    @date：2025/3/14 16:09
-    @desc:
+@project: MaxKB
+@Author：虎
+@file： log.py
+@date：2025/3/14 16:09
+@desc:
 """
-from gettext import gettext
+
 
 from setting.models.log_management import Log
 
@@ -17,11 +17,11 @@ def _get_ip_address(request):
     @param request:
     @return:
     """
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
+        ip = x_forwarded_for.split(",")[0]
     else:
-        ip = request.META.get('REMOTE_ADDR')
+        ip = request.META.get("REMOTE_ADDR")
     return ip
 
 
@@ -33,9 +33,7 @@ def _get_user(request):
     """
     user = request.user
     if user is None:
-        return {
-
-        }
+        return {}
     return {
         "id": str(user.id),
         "email": user.email,
@@ -50,15 +48,17 @@ def _get_details(request):
     path = request.path
     body = request.data
     query = request.query_params
-    return {
-        'path': path,
-        'body': body,
-        'query': query
-    }
+    return {"path": path, "body": body, "query": query}
 
 
-def log(menu: str, operate, get_user=_get_user, get_ip_address=_get_ip_address, get_details=_get_details,
-        get_operation_object=None):
+def log(
+    menu: str,
+    operate,
+    get_user=_get_user,
+    get_ip_address=_get_ip_address,
+    get_details=_get_details,
+    get_operation_object=None,
+):
     """
     记录审计日志
     @param menu: 操作菜单 str
@@ -77,7 +77,7 @@ def log(menu: str, operate, get_user=_get_user, get_ip_address=_get_ip_address, 
             try:
                 if get_operation_object is not None:
                     operation_object = get_operation_object(request, kwargs)
-            except Exception as e:
+            except Exception:
                 pass
             try:
                 return func(view, request, **kwargs)
@@ -92,8 +92,15 @@ def log(menu: str, operate, get_user=_get_user, get_ip_address=_get_ip_address, 
                 if callable(operate):
                     _operate = operate(request)
                 # 插入审计日志
-                Log(menu=menu, operate=_operate, user=user, status=status, ip_address=ip, details=details,
-                    operation_object=operation_object).save()
+                Log(
+                    menu=menu,
+                    operate=_operate,
+                    user=user,
+                    status=status,
+                    ip_address=ip,
+                    details=details,
+                    operation_object=operation_object,
+                ).save()
 
         return run
 

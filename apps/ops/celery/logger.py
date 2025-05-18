@@ -10,9 +10,9 @@ from kombu.mixins import ConsumerMixin
 from .utils import get_celery_task_log_path
 from .const import CELERY_LOG_MAGIC_MARK
 
-routing_key = 'celery_log'
-celery_log_exchange = Exchange('celery_log_exchange', type='direct')
-celery_log_queue = [Queue('celery_log', celery_log_exchange, routing_key=routing_key)]
+routing_key = "celery_log"
+celery_log_exchange = Exchange("celery_log_exchange", type="direct")
+celery_log_queue = [Queue("celery_log", celery_log_exchange, routing_key=routing_key)]
 
 
 class CeleryLoggerConsumer(ConsumerMixin):
@@ -20,10 +20,13 @@ class CeleryLoggerConsumer(ConsumerMixin):
         self.connection = Connection(settings.CELERY_LOG_BROKER_URL)
 
     def get_consumers(self, Consumer, channel):
-        return [Consumer(queues=celery_log_queue,
-                         accept=['pickle', 'json'],
-                         callbacks=[self.process_task])
-                ]
+        return [
+            Consumer(
+                queues=celery_log_queue,
+                accept=["pickle", "json"],
+                callbacks=[self.process_task],
+            )
+        ]
 
     def handle_task_start(self, task_id, message):
         pass
@@ -35,9 +38,9 @@ class CeleryLoggerConsumer(ConsumerMixin):
         pass
 
     def process_task(self, body, message):
-        action = body.get('action')
-        task_id = body.get('task_id')
-        msg = body.get('msg')
+        action = body.get("action")
+        task_id = body.get("task_id")
+        msg = body.get("msg")
         if action == CeleryLoggerProducer.ACTION_TASK_LOG:
             self.handle_task_log(task_id, msg, message)
         elif action == CeleryLoggerProducer.ACTION_TASK_START:
@@ -58,12 +61,15 @@ class CeleryLoggerProducer:
 
     def publish(self, payload):
         self.producer.publish(
-            payload, serializer='json', exchange=celery_log_exchange,
-            declare=[celery_log_exchange], routing_key=routing_key
+            payload,
+            serializer="json",
+            exchange=celery_log_exchange,
+            declare=[celery_log_exchange],
+            routing_key=routing_key,
         )
 
     def log(self, task_id, msg):
-        payload = {'task_id': task_id, 'msg': msg, 'action': self.ACTION_TASK_LOG}
+        payload = {"task_id": task_id, "msg": msg, "action": self.ACTION_TASK_LOG}
         return self.publish(payload)
 
     def read(self):
@@ -73,16 +79,16 @@ class CeleryLoggerProducer:
         pass
 
     def task_end(self, task_id):
-        payload = {'task_id': task_id, 'action': self.ACTION_TASK_END}
+        payload = {"task_id": task_id, "action": self.ACTION_TASK_END}
         return self.publish(payload)
 
     def task_start(self, task_id):
-        payload = {'task_id': task_id, 'action': self.ACTION_TASK_START}
+        payload = {"task_id": task_id, "action": self.ACTION_TASK_START}
         return self.publish(payload)
 
 
 class CeleryTaskLoggerHandler(StreamHandler):
-    terminator = '\r\n'
+    terminator = "\r\n"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -182,7 +188,7 @@ class CeleryTaskFileHandler(CeleryTaskLoggerHandler):
 
     def handle_task_start(self, task_id):
         log_path = get_celery_task_log_path(task_id)
-        self.f = open(log_path, 'a')
+        self.f = open(log_path, "a")
 
     def handle_task_end(self, task_id):
         self.f and self.f.close()
@@ -197,7 +203,7 @@ class CeleryThreadTaskFileHandler(CeleryThreadingLoggerHandler):
     def write_thread_task_log(self, thread_id, record):
         f = self.thread_id_fd_mapper.get(thread_id, None)
         if not f:
-            raise ValueError('Not found thread task file')
+            raise ValueError("Not found thread task file")
         msg = self.format(record)
         f.write(msg.encode())
         f.write(self.terminator.encode())
@@ -208,16 +214,16 @@ class CeleryThreadTaskFileHandler(CeleryThreadingLoggerHandler):
             f.flush()
 
     def handle_task_start(self, task_id):
-        print('handle_task_start')
+        print("handle_task_start")
         log_path = get_celery_task_log_path(task_id)
         thread_id = self.get_current_thread_id()
         self.task_id_thread_id_mapper[task_id] = thread_id
-        f = open(log_path, 'ab')
+        f = open(log_path, "ab")
         self.thread_id_fd_mapper[thread_id] = f
 
     def handle_task_end(self, task_id):
-        print('handle_task_end')
-        ident_id = self.task_id_thread_id_mapper.get(task_id, '')
+        print("handle_task_end")
+        ident_id = self.task_id_thread_id_mapper.get(task_id, "")
         f = self.thread_id_fd_mapper.pop(ident_id, None)
         if f and not f.closed:
             f.write(CELERY_LOG_MAGIC_MARK)

@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0003_application_icon'),
+        ("application", "0003_application_icon"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='applicationaccesstoken',
-            name='show_source',
-            field=models.BooleanField(default=False, verbose_name='是否显示知识来源'),
+            model_name="applicationaccesstoken",
+            name="show_source",
+            field=models.BooleanField(default=False, verbose_name="是否显示知识来源"),
         ),
     ]

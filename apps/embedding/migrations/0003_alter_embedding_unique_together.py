@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('embedding', '0002_embedding_search_vector'),
+        ("embedding", "0002_embedding_search_vector"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='embedding',
+            name="embedding",
             unique_together=set(),
         ),
     ]

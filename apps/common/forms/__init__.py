@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： __init__.py
-    @date：2023/10/31 17:56
-    @desc:
+@project: maxkb
+@Author：虎
+@file： __init__.py
+@date：2023/10/31 17:56
+@desc:
 """
+
 from .array_object_card import *
 from .base_field import *
 from .base_form import *

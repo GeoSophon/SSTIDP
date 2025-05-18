@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('application', '0007_alter_application_prologue'),
+        ("application", "0007_alter_application_prologue"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='chat',
-            name='is_deleted',
-            field=models.BooleanField(default=False, verbose_name=''),
+            model_name="chat",
+            name="is_deleted",
+            field=models.BooleanField(default=False, verbose_name=""),
         ),
     ]

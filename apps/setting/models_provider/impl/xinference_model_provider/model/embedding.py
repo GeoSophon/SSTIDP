@@ -15,11 +15,13 @@ class XinferenceEmbedding(MaxKBBaseModel, Embeddings):
     """UID of the launched model"""
 
     @staticmethod
-    def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
+    def new_instance(
+        model_type, model_name, model_credential: Dict[str, object], **model_kwargs
+    ):
         return XinferenceEmbedding(
             model_uid=model_name,
-            server_url=model_credential.get('api_base'),
-            api_key=model_credential.get('api_key'),
+            server_url=model_credential.get("api_base"),
+            api_key=model_credential.get("api_key"),
         )
 
     def down_model(self):
@@ -31,8 +33,10 @@ class XinferenceEmbedding(MaxKBBaseModel, Embeddings):
         thread.start()
 
     def __init__(
-            self, server_url: Optional[str] = None, model_uid: Optional[str] = None,
-            api_key: Optional[str] = None
+        self,
+        server_url: Optional[str] = None,
+        model_uid: Optional[str] = None,
+        api_key: Optional[str] = None,
     ):
         try:
             from xinference.client import RESTfulClient

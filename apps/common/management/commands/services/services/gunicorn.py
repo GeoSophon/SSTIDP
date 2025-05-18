@@ -1,13 +1,12 @@
 from .base import BaseService
 from ..hands import *
 
-__all__ = ['GunicornService']
+__all__ = ["GunicornService"]
 
 
 class GunicornService(BaseService):
-
     def __init__(self, **kwargs):
-        self.worker = kwargs['worker_gunicorn']
+        self.worker = kwargs["worker_gunicorn"]
         super().__init__(**kwargs)
 
     @property
@@ -15,20 +14,29 @@ class GunicornService(BaseService):
         print("\n- Start Gunicorn WSGI HTTP Server")
 
         log_format = '%(h)s %(t)s %(L)ss "%(r)s" %(s)s %(b)s '
-        bind = f'{HTTP_HOST}:{HTTP_PORT}'
+        bind = f"{HTTP_HOST}:{HTTP_PORT}"
         cmd = [
-            'gunicorn', 'smartdoc.wsgi:application',
-            '-b', bind,
-            '-k', 'gthread',
-            '--threads', '200',
-            '-w', str(self.worker),
-            '--max-requests', '10240',
-            '--max-requests-jitter', '2048',
-            '--access-logformat', log_format,
-            '--access-logfile', '-'
+            "gunicorn",
+            "smartdoc.wsgi:application",
+            "-b",
+            bind,
+            "-k",
+            "gthread",
+            "--threads",
+            "200",
+            "-w",
+            str(self.worker),
+            "--max-requests",
+            "10240",
+            "--max-requests-jitter",
+            "2048",
+            "--access-logformat",
+            log_format,
+            "--access-logfile",
+            "-",
         ]
         if DEBUG:
-            cmd.append('--reload')
+            cmd.append("--reload")
         return cmd
 
     @property

@@ -1,10 +1,10 @@
 # coding=utf-8
 """
-    @project: maxkb
-    @Author：虎
-    @file： compiler.py
-    @date：2023/10/7 10:53
-    @desc:
+@project: maxkb
+@Author：虎
+@file： compiler.py
+@date：2023/10/7 10:53
+@desc:
 """
 
 from django.core.exceptions import EmptyResultSet, FullResultSet
@@ -14,13 +14,17 @@ from django.db.transaction import TransactionManagementError
 
 
 class AppSQLCompiler(SQLCompiler):
-    def __init__(self, query, connection, using, elide_empty=True, field_replace_dict=None):
+    def __init__(
+        self, query, connection, using, elide_empty=True, field_replace_dict=None
+    ):
         super().__init__(query, connection, using, elide_empty)
         if field_replace_dict is None:
             field_replace_dict = {}
         self.field_replace_dict = field_replace_dict
 
-    def get_query_str(self, with_limits=True, with_table_name=False, with_col_aliases=False):
+    def get_query_str(
+        self, with_limits=True, with_table_name=False, with_col_aliases=False
+    ):
         refcounts_before = self.query.alias_refcount.copy()
         try:
             combinator = self.query.combinator
@@ -94,18 +98,18 @@ class AppSQLCompiler(SQLCompiler):
 
                 if self.query.select_for_update and features.has_select_for_update:
                     if (
-                            self.connection.get_autocommit()
-                            # Don't raise an exception when database doesn't
-                            # support transactions, as it's a noop.
-                            and features.supports_transactions
+                        self.connection.get_autocommit()
+                        # Don't raise an exception when database doesn't
+                        # support transactions, as it's a noop.
+                        and features.supports_transactions
                     ):
                         raise TransactionManagementError(
                             "select_for_update cannot be used outside of a transaction."
                         )
 
                     if (
-                            with_limit_offset
-                            and not features.supports_select_for_update_with_limit
+                        with_limit_offset
+                        and not features.supports_select_for_update_with_limit
                     ):
                         raise NotSupportedError(
                             "LIMIT/OFFSET is not supported with "

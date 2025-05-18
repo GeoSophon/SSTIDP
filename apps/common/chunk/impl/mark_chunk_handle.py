@@ -1,19 +1,20 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
-    @file： mark_chunk_handle.py
-    @date：2024/7/23 16:52
-    @desc:
+@project: MaxKB
+@Author：虎
+@file： mark_chunk_handle.py
+@date：2024/7/23 16:52
+@desc:
 """
+
 import re
 from typing import List
 
 from common.chunk.i_chunk_handle import IChunkHandle
 
 max_chunk_len = 256
-split_chunk_pattern = r'.{1,%d}[。| |\\.|！|;|；|!|\n]' % max_chunk_len
-max_chunk_pattern = r'.{1,%d}' % max_chunk_len
+split_chunk_pattern = r".{1,%d}[。| |\\.|！|;|；|!|\n]" % max_chunk_len
+max_chunk_pattern = r".{1,%d}" % max_chunk_len
 
 
 class MarkChunkHandle(IChunkHandle):
@@ -32,7 +33,9 @@ class MarkChunkHandle(IChunkHandle):
                         if len(other_chunk.strip()) > 0:
                             result.append(other_chunk.strip())
                     else:
-                        max_chunk_list = re.findall(max_chunk_pattern, other_chunk, flags=re.DOTALL)
+                        max_chunk_list = re.findall(
+                            max_chunk_pattern, other_chunk, flags=re.DOTALL
+                        )
                         for m_c in max_chunk_list:
                             if len(m_c.strip()) > 0:
                                 result.append(m_c.strip())

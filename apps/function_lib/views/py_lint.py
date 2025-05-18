@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-    @project: MaxKB
-    @Author：虎
-    @file： py_lint.py
-    @date：2024/9/30 15:35
-    @desc:
+@project: MaxKB
+@Author：虎
+@file： py_lint.py
+@date：2024/9/30 15:35
+@desc:
 """
+
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -22,11 +23,15 @@ from django.utils.translation import gettext_lazy as _
 class PyLintView(APIView):
     authentication_classes = [TokenAuth]
 
-    @action(methods=['POST'], detail=False)
-    @swagger_auto_schema(operation_summary=_('Check code'),
-                         operation_id=_('Check code'),
-                         request_body=PyLintApi.get_request_body_api(),
-                         tags=[_('Function')])
+    @action(methods=["POST"], detail=False)
+    @swagger_auto_schema(
+        operation_summary=_("Check code"),
+        operation_id=_("Check code"),
+        request_body=PyLintApi.get_request_body_api(),
+        tags=[_("Function")],
+    )
     @has_permissions(RoleConstants.ADMIN, RoleConstants.USER)
     def post(self, request: Request):
-        return result.success(PyLintSerializer(data={'user_id': request.user.id}).pylint(request.data))
+        return result.success(
+            PyLintSerializer(data={"user_id": request.user.id}).pylint(request.data)
+        )

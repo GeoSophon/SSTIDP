@@ -5,13 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('application', '0023_application_stt_autosend'),
+        ("application", "0023_application_stt_autosend"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='applicationaccesstoken',
-            name='language',
-            field=models.CharField(default=None, max_length=10, null=True, verbose_name='语言')
+            model_name="applicationaccesstoken",
+            name="language",
+            field=models.CharField(
+                default=None, max_length=10, null=True, verbose_name="语言"
+            ),
         ),
     ]

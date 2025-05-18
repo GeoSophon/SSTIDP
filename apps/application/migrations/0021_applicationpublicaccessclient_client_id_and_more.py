@@ -11,24 +11,33 @@ SET client_id="id"
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('application', '0020_application_record_update_time'),
+        ("application", "0020_application_record_update_time"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='applicationpublicaccessclient',
-            name='client_id',
-            field=models.UUIDField(default=uuid.uuid1, verbose_name='公共访问链接客户端id'),
+            model_name="applicationpublicaccessclient",
+            name="client_id",
+            field=models.UUIDField(
+                default=uuid.uuid1, verbose_name="公共访问链接客户端id"
+            ),
         ),
         migrations.AlterField(
-            model_name='applicationpublicaccessclient',
-            name='id',
-            field=models.UUIDField(default=uuid.uuid1, editable=False, primary_key=True, serialize=False,
-                                   verbose_name='主键id'),
+            model_name="applicationpublicaccessclient",
+            name="id",
+            field=models.UUIDField(
+                default=uuid.uuid1,
+                editable=False,
+                primary_key=True,
+                serialize=False,
+                verbose_name="主键id",
+            ),
         ),
         migrations.AddIndex(
-            model_name='applicationpublicaccessclient',
-            index=models.Index(fields=['client_id'], name='application_client__4de9af_idx'),
+            model_name="applicationpublicaccessclient",
+            index=models.Index(
+                fields=["client_id"], name="application_client__4de9af_idx"
+            ),
         ),
-        migrations.RunSQL(run_sql)
+        migrations.RunSQL(run_sql),
     ]

@@ -12,13 +12,14 @@ def custom_get_token_ids(text: str):
 
 
 class GeminiImage(MaxKBBaseModel, ChatGoogleGenerativeAI):
-
     @staticmethod
-    def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
+    def new_instance(
+        model_type, model_name, model_credential: Dict[str, object], **model_kwargs
+    ):
         optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)
         return GeminiImage(
             model=model_name,
-            google_api_key=model_credential.get('api_key'),
+            google_api_key=model_credential.get("api_key"),
             streaming=True,
             **optional_params,
         )

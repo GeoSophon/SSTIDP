@@ -6,16 +6,20 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('setting', '0005_model_permission_type'),
-        ('dataset', '0005_file'),
+        ("setting", "0005_model_permission_type"),
+        ("dataset", "0005_file"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dataset',
-            name='embedding_mode',
-            field=models.ForeignKey(default=dataset.models.data_set.default_model, on_delete=django.db.models.deletion.DO_NOTHING, to='setting.model', verbose_name='向量模型'),
+            model_name="dataset",
+            name="embedding_mode",
+            field=models.ForeignKey(
+                default=dataset.models.data_set.default_model,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                to="setting.model",
+                verbose_name="向量模型",
+            ),
         ),
     ]
