@@ -5,6 +5,12 @@ DB_PORT: 5432
 DB_USER: root
 DB_PASSWORD: xxxxxxx
 DB_ENGINE: django.db.backends.postgresql_psycopg2
+# redis链接信息
+REDIS_DB_HOST: localhost
+REDIS_DB_PORT: 6379
+REDIS_DB_DB: 1
+REDIS_DB_USER: xxxxx
+REDIS_DB_PASSWORD: xxxxx
 
 DEBUG: false
 
